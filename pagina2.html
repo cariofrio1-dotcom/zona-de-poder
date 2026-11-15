@@ -1,0 +1,439 @@
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#06080d">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/premium.css">
+  <title>NutriBalance | Nutrición inteligente</title>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span><span>NutriBalance</span></div>
+      <span class="local-badge">100% local · PWA lista</span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Nutrición de alto rendimiento</p>
+          <h1 id="page-title">Controla tu energía con precisión.</h1>
+          <p class="hero-copy">Calcula tus objetivos diarios, registra tus comidas y visualiza tu progreso con una experiencia rápida, clara y diseñada para el día a día.</p>
+        </div>
+      </section>
+
+      <section class="card section-card" aria-labelledby="profile-title">
+        <div class="section-heading">
+          <div><span class="step-label">01 · Perfil</span><h2 id="profile-title" style="margin-top:7px">Configura tus objetivos</h2><p>Usamos tus datos para estimar metabolismo, gasto energético y macros.</p></div>
+        </div>
+        <form id="profile-form" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="weight">Peso <span>(kg)</span></label>
+              <input id="weight" name="weight" type="number" min="20" max="350" step="0.1" placeholder="Ej. 68.5" required>
+              <span class="field-hint">Entre 20 y 350 kg</span>
+            </div>
+            <div class="field">
+              <label for="height">Estatura <span>(cm)</span></label>
+              <input id="height" name="height" type="number" min="100" max="250" step="0.1" placeholder="Ej. 172" required>
+              <span class="field-hint">Entre 100 y 250 cm</span>
+            </div>
+            <div class="field">
+              <label for="age">Edad <span>(años)</span></label>
+              <input id="age" name="age" type="number" min="15" max="100" step="1" placeholder="Ej. 30" required>
+              <span class="field-hint">Entre 15 y 100 años</span>
+            </div>
+            <div class="field">
+              <label for="sex">Sexo biológico</label>
+              <select id="sex" name="sex" required>
+                <option value="male">Masculino</option>
+                <option value="female">Femenino</option>
+              </select>
+              <span class="field-hint">Fórmula Mifflin–St Jeor</span>
+            </div>
+            <div class="field">
+              <label for="activity">Actividad física</label>
+              <select id="activity" name="activity" required>
+                <option value="1.2">Sedentario</option>
+                <option value="1.375">Ligero · 1–3 días/semana</option>
+                <option value="1.55" selected>Moderado · 3–5 días/semana</option>
+                <option value="1.725">Intenso · 6–7 días/semana</option>
+                <option value="1.9">Muy intenso · trabajo físico o doble sesión</option>
+              </select>
+              <span class="field-hint">Elige la opción más cercana</span>
+            </div>
+            <div class="field">
+              <label for="goal">Objetivo</label>
+              <select id="goal" name="goal" required>
+                <option value="lose">Bajar peso</option>
+                <option value="maintain" selected>Mantener peso</option>
+                <option value="gain">Ganar masa muscular</option>
+              </select>
+              <span class="field-hint">Ajuste calórico estimado</span>
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="button" type="submit">Calcular mi plan <span aria-hidden="true">→</span></button>
+          </div>
+          <p class="message" id="profile-message" role="alert" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="dashboard" id="dashboard" aria-live="polite">
+        <div class="summary-grid">
+          <article class="card metric">
+            <div class="metric-label">Metabolismo basal</div>
+            <div class="metric-value"><span id="bmr-value">—</span><span class="metric-unit">kcal/día</span></div>
+            <div class="metric-note">En reposo · Mifflin–St Jeor</div>
+          </article>
+          <article class="card metric">
+            <div class="metric-label">Gasto total estimado</div>
+            <div class="metric-value"><span id="tdee-value">—</span><span class="metric-unit">kcal/día</span></div>
+            <div class="metric-note">Incluye tu nivel de actividad</div>
+          </article>
+          <article class="card metric">
+            <div class="metric-label">Meta de calorías</div>
+            <div class="metric-value"><span id="target-calories">—</span><span class="metric-unit">kcal/día</span></div>
+            <div class="metric-note" id="goal-note">Según tu objetivo</div>
+          </article>
+          <article class="card metric">
+            <div class="metric-label">Proteína diaria</div>
+            <div class="metric-value"><span id="target-protein">—</span><span class="metric-unit">g</span></div>
+            <div class="metric-note">Meta recomendada</div>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="card section-card" aria-labelledby="progress-title">
+            <div class="section-heading">
+              <div><span class="step-label">02 · Progreso</span><h2 id="progress-title" style="margin-top:7px">Avance diario</h2><p>Comparación entre lo consumido y tus metas.</p></div>
+            </div>
+            <div class="progress-list">
+              <div>
+                <div class="progress-head"><span>Proteínas</span><span id="protein-progress-label">0 / 0 g · 0%</span></div>
+                <div class="track" role="progressbar" aria-label="Proteínas completadas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="fill protein" id="protein-bar"></div></div>
+              </div>
+              <div>
+                <div class="progress-head"><span>Carbohidratos</span><span id="carbs-progress-label">0 / 0 g · 0%</span></div>
+                <div class="track" role="progressbar" aria-label="Carbohidratos completados" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="fill carbs" id="carbs-bar"></div></div>
+              </div>
+              <div>
+                <div class="progress-head"><span>Grasas</span><span id="fat-progress-label">0 / 0 g · 0%</span></div>
+                <div class="track" role="progressbar" aria-label="Grasas completadas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="fill fat" id="fat-bar"></div></div>
+              </div>
+              <div>
+                <div class="progress-head"><span>Calorías</span><span id="calories-progress-label">0 / 0 kcal · 0%</span></div>
+                <div class="track" role="progressbar" aria-label="Calorías completadas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="fill calories" id="calories-bar"></div></div>
+              </div>
+            </div>
+            <p class="progress-footnote" style="margin-top:14px;color:var(--muted);font-size:.84rem">Las barras muestran avance hasta la meta; pueden superar el 100%.</p>
+          </section>
+
+          <section class="card section-card" aria-labelledby="plan-title">
+            <div class="section-heading">
+              <div><span class="step-label">04 · Plan</span><h2 id="plan-title" style="margin-top:7px">Idea para hoy</h2><p>Distribución orientativa de comidas.</p></div>
+            </div>
+            <div class="meal-list" id="meal-list"></div>
+            <p class="plan-note" style="margin-top:14px;color:var(--muted);font-size:.84rem">Ajusta porciones y preferencias con apoyo profesional si lo necesitas.</p>
+          </section>
+        </div>
+
+        <section class="card section-card" aria-labelledby="food-title">
+          <div class="section-heading">
+            <div><span class="step-label">03 · Registro</span><h2 id="food-title" style="margin-top:7px">Alimentos consumidos</h2><p>Selecciona un alimento y registra la cantidad en gramos.</p></div>
+          </div>
+          <form class="food-form" id="food-form" novalidate>
+            <div class="field">
+              <label for="food-select">Alimento</label>
+              <select id="food-select" name="food" required aria-label="Seleccionar alimento"></select>
+            </div>
+            <div class="field">
+              <label for="food-grams">Cantidad (g)</label>
+              <input id="food-grams" name="grams" type="number" min="1" max="5000" step="1" placeholder="Ej. 150" required>
+            </div>
+            <button class="button" type="submit">＋ Agregar</button>
+          </form>
+          <p class="message" id="food-message" role="alert" aria-live="polite"></p>
+          <div class="table-wrap">
+            <table class="food-table">
+              <thead><tr><th>Alimento</th><th>Cantidad</th><th>Proteínas</th><th>Carbohidratos</th><th>Grasas</th><th>Calorías</th><th><span class="sr-only">Acción</span></th></tr></thead>
+              <tbody id="food-rows"><tr class="empty-row"><td colspan="7">Aún no agregas alimentos a tu registro.</td></tr></tbody>
+            </table>
+          </div>
+          <div class="food-totals" id="food-totals" aria-live="polite">
+            <span>Total consumido:</span><span><strong>0 g</strong> proteína</span><span><strong>0 g</strong> carbohidratos</span><span><strong>0 g</strong> grasas</span><span><strong>0 kcal</strong></span>
+          </div>
+        </section>
+
+        <p class="notice">Esta calculadora ofrece estimaciones generales y no reemplaza la valoración de un profesional de la salud.</p>
+      </section>
+    </main>
+    <footer>NutriBalance · Experiencia premium para seguimiento nutricional</footer>
+  </div>
+
+  <script>
+    "use strict";
+
+    const foods = [
+      { group: "Cereales", name: "Arroz cocido", protein: 2.7, carbs: 28.2, fat: 0.3 },
+      { group: "Cereales", name: "Avena", protein: 16.9, carbs: 66.3, fat: 6.9 },
+      { group: "Cereales", name: "Pan integral", protein: 12.5, carbs: 43.3, fat: 3.5 },
+      { group: "Cereales", name: "Papa cocida", protein: 1.9, carbs: 20.1, fat: 0.1 },
+      { group: "Proteínas", name: "Pollo cocido", protein: 31, carbs: 0, fat: 3.6 },
+      { group: "Proteínas", name: "Carne de res magra cocida", protein: 26, carbs: 0, fat: 10 },
+      { group: "Proteínas", name: "Atún en agua escurrido", protein: 25.5, carbs: 0, fat: 0.8 },
+      { group: "Proteínas", name: "Huevo entero", protein: 12.6, carbs: 0.7, fat: 9.5 },
+      { group: "Frutas", name: "Manzana", protein: 0.3, carbs: 13.8, fat: 0.2 },
+      { group: "Frutas", name: "Banano", protein: 1.1, carbs: 22.8, fat: 0.3 },
+      { group: "Frutas", name: "Naranja", protein: 0.9, carbs: 11.8, fat: 0.1 },
+      { group: "Verduras", name: "Brócoli", protein: 2.8, carbs: 6.6, fat: 0.4 },
+      { group: "Verduras", name: "Zanahoria", protein: 0.9, carbs: 9.6, fat: 0.2 },
+      { group: "Verduras", name: "Tomate", protein: 0.9, carbs: 3.9, fat: 0.2 },
+      { group: "Lácteos", name: "Leche (entera)", protein: 3.2, carbs: 4.8, fat: 3.3 },
+      { group: "Lácteos", name: "Yogur natural", protein: 3.5, carbs: 4.7, fat: 3.3 },
+      { group: "Lácteos", name: "Queso fresco", protein: 18, carbs: 3, fat: 20 },
+      { group: "Grasas saludables", name: "Aguacate", protein: 2, carbs: 8.5, fat: 14.7 },
+      { group: "Grasas saludables", name: "Almendras", protein: 21.2, carbs: 21.6, fat: 49.9 },
+      { group: "Grasas saludables", name: "Aceite de oliva", protein: 0, carbs: 0, fat: 100 }
+    ];
+
+    const profileForm = document.querySelector("#profile-form");
+    const foodForm = document.querySelector("#food-form");
+    const foodSelect = document.querySelector("#food-select");
+    const foodRows = document.querySelector("#food-rows");
+    const profileMessage = document.querySelector("#profile-message");
+    const foodMessage = document.querySelector("#food-message");
+    const dashboard = document.querySelector("#dashboard");
+    let targets = null;
+    let entries = [];
+    let nextEntryId = 1;
+
+    const formatNumber = (value, decimals = 0) => new Intl.NumberFormat("es", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }).format(value);
+
+    function nutritionFor(food, grams) {
+      const factor = grams / 100;
+      const protein = food.protein * factor;
+      const carbs = food.carbs * factor;
+      const fat = food.fat * factor;
+      return { protein, carbs, fat, calories: protein * 4 + carbs * 4 + fat * 9 };
+    }
+
+    function populateFoodSelect() {
+      const groups = new Map();
+      foods.forEach((food, index) => {
+        if (!groups.has(food.group)) {
+          const group = document.createElement("optgroup");
+          group.label = food.group;
+          groups.set(food.group, group);
+          foodSelect.append(group);
+        }
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = food.name;
+        groups.get(food.group).append(option);
+      });
+    }
+
+    function readProfile() {
+      const weight = Number(profileForm.elements.weight.value);
+      const height = Number(profileForm.elements.height.value);
+      const age = Number(profileForm.elements.age.value);
+      const sex = profileForm.elements.sex.value;
+      const activity = Number(profileForm.elements.activity.value);
+      const goal = profileForm.elements.goal.value;
+
+      if (!Number.isFinite(weight) || weight < 20 || weight > 350) return { error: "Ingresa un peso entre 20 y 350 kg." };
+      if (!Number.isFinite(height) || height < 100 || height > 250) return { error: "Ingresa una estatura entre 100 y 250 cm." };
+      if (!Number.isInteger(age) || age < 15 || age > 100) return { error: "Ingresa una edad entera entre 15 y 100 años." };
+      if (!["male", "female"].includes(sex) || !Number.isFinite(activity) || !["lose", "maintain", "gain"].includes(goal)) {
+        return { error: "Revisa las opciones de sexo, actividad y objetivo." };
+      }
+      return { weight, height, age, sex, activity, goal };
+    }
+
+    function calculateTargets(profile) {
+      const sexOffset = profile.sex === "male" ? 5 : -161;
+      const bmr = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age + sexOffset;
+      const tdee = bmr * profile.activity;
+      const calorieFactor = profile.goal === "lose" ? 0.85 : profile.goal === "gain" ? 1.10 : 1;
+      const calories = Math.round(tdee * calorieFactor);
+      const proteinPerKg = profile.goal === "lose" ? 1.8 : profile.goal === "gain" ? 2 : 1.6;
+      const protein = profile.weight * proteinPerKg;
+      const fat = Math.max(profile.weight * 0.6, calories * 0.25 / 9);
+      const carbs = Math.max(0, (calories - protein * 4 - fat * 9) / 4);
+      return { bmr, tdee, calories, protein, carbs, fat, goal: profile.goal };
+    }
+
+    function updateProgress() {
+      if (!targets) return;
+      const totals = entries.reduce((sum, entry) => {
+        const amount = nutritionFor(foods[entry.foodIndex], entry.grams);
+        sum.protein += amount.protein;
+        sum.carbs += amount.carbs;
+        sum.fat += amount.fat;
+        sum.calories += amount.calories;
+        return sum;
+      }, { protein: 0, carbs: 0, fat: 0, calories: 0 });
+
+      const metrics = [
+        { key: "protein", label: "protein", unit: "g", target: targets.protein },
+        { key: "carbs", label: "carbs", unit: "g", target: targets.carbs },
+        { key: "fat", label: "fat", unit: "g", target: targets.fat },
+        { key: "calories", label: "calories", unit: "kcal", target: targets.calories }
+      ];
+
+      metrics.forEach(({ key, label, unit, target }) => {
+        const value = totals[key];
+        const percentage = target > 0 ? value / target * 100 : 0;
+        const roundedPercentage = Math.round(percentage);
+        const bar = document.querySelector(`#${label}-bar`);
+        const track = bar.parentElement;
+        bar.style.width = `${Math.min(percentage, 100)}%`;
+        track.setAttribute("aria-valuenow", String(Math.min(roundedPercentage, 100)));
+        document.querySelector(`#${label}-progress-label`).textContent =
+          `${formatNumber(value)} / ${formatNumber(target)} ${unit} · ${roundedPercentage}%`;
+      });
+
+      document.querySelector("#food-totals").innerHTML =
+        `<span>Total consumido:</span><span><strong>${formatNumber(totals.protein)} g</strong> proteína</span>` +
+        `<span><strong>${formatNumber(totals.carbs)} g</strong> carbohidratos</span>` +
+        `<span><strong>${formatNumber(totals.fat)} g</strong> grasas</span>` +
+        `<span><strong>${formatNumber(totals.calories)} kcal</strong></span>`;
+    }
+
+    function renderFoodEntries() {
+      foodRows.replaceChildren();
+      if (entries.length === 0) {
+        const row = document.createElement("tr");
+        row.className = "empty-row";
+        const cell = document.createElement("td");
+        cell.colSpan = 7;
+        cell.textContent = "Aún no agregas alimentos a tu registro.";
+        row.append(cell);
+        foodRows.append(row);
+        updateProgress();
+        return;
+      }
+
+      entries.forEach((entry) => {
+        const food = foods[entry.foodIndex];
+        const values = nutritionFor(food, entry.grams);
+        const row = document.createElement("tr");
+        [food.name, `${formatNumber(entry.grams)} g`, `${formatNumber(values.protein, 1)} g`,
+          `${formatNumber(values.carbs, 1)} g`, `${formatNumber(values.fat, 1)} g`,
+          `${formatNumber(values.calories)} kcal`].forEach((value) => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.append(cell);
+        });
+        const actionCell = document.createElement("td");
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.className = "remove-button";
+        removeButton.textContent = "Quitar";
+        removeButton.setAttribute("aria-label", `Quitar ${food.name} del registro`);
+        removeButton.addEventListener("click", () => {
+          entries = entries.filter((item) => item.id !== entry.id);
+          renderFoodEntries();
+        });
+        actionCell.append(removeButton);
+        row.append(actionCell);
+        foodRows.append(row);
+      });
+      updateProgress();
+    }
+
+    function renderTargets() {
+      document.querySelector("#bmr-value").textContent = formatNumber(targets.bmr);
+      document.querySelector("#tdee-value").textContent = formatNumber(targets.tdee);
+      document.querySelector("#target-calories").textContent = formatNumber(targets.calories);
+      document.querySelector("#target-protein").textContent = formatNumber(targets.protein);
+      const goalLabels = { lose: "Déficit moderado del 15%", maintain: "Calorías de mantenimiento", gain: "Superávit moderado del 10%" };
+      document.querySelector("#goal-note").textContent = goalLabels[targets.goal];
+      renderMeals(targets);
+      updateProgress();
+    }
+
+    function renderMeals(currentTargets) {
+      const meals = [
+        { icon: "☀️", title: "Desayuno", description: "Avena con leche, banano y yogur natural." },
+        { icon: "🍎", title: "Refrigerio mañana", description: "Una manzana y un puñado pequeño de almendras." },
+        { icon: "🥗", title: "Almuerzo", description: "Pollo, arroz cocido, brócoli y aguacate." },
+        { icon: "🥛", title: "Refrigerio tarde", description: "Yogur natural con fruta de temporada." },
+        { icon: "🍽️", title: "Cena", description: "Huevo, papa cocida, tomate y verduras." }
+      ];
+      const extra = currentTargets.goal === "gain"
+        ? "Puedes añadir una porción de arroz o avena si necesitas más energía."
+        : currentTargets.goal === "lose"
+          ? "Prioriza verduras y una porción suficiente de proteína."
+          : "Ajusta las porciones para acercarte a tu meta diaria.";
+      const mealList = document.querySelector("#meal-list");
+      mealList.replaceChildren();
+      meals.forEach((meal, index) => {
+        const article = document.createElement("article");
+        article.className = "meal";
+        const icon = document.createElement("span");
+        icon.className = "meal-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = meal.icon;
+        const content = document.createElement("div");
+        const title = document.createElement("h4");
+        title.textContent = meal.title;
+        const description = document.createElement("p");
+        description.textContent = index === meals.length - 1 ? `${meal.description} ${extra}` : meal.description;
+        content.append(title, description);
+        article.append(icon, content);
+        mealList.append(article);
+      });
+    }
+
+    profileForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const profile = readProfile();
+      if (profile.error) {
+        profileMessage.textContent = profile.error;
+        return;
+      }
+      profileMessage.textContent = "";
+      targets = calculateTargets(profile);
+      renderTargets();
+      dashboard.classList.add("visible");
+      dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    foodForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      foodMessage.textContent = "";
+      if (!targets) {
+        foodMessage.textContent = "Primero completa tu perfil y calcula tus metas.";
+        return;
+      }
+      const foodIndex = Number(foodSelect.value);
+      const grams = Number(foodForm.elements.grams.value);
+      if (!Number.isInteger(foodIndex) || !foods[foodIndex]) {
+        foodMessage.textContent = "Selecciona un alimento válido.";
+        return;
+      }
+      if (!Number.isFinite(grams) || grams < 1 || grams > 5000) {
+        foodMessage.textContent = "Ingresa una cantidad entre 1 y 5000 gramos.";
+        return;
+      }
+      entries.push({ id: nextEntryId++, foodIndex, grams });
+      foodForm.elements.grams.value = "";
+      renderFoodEntries();
+    });
+
+    populateFoodSelect();
+  </script>
+  <script src="assets/js/ui.js" defer></script>
+  <script src="pwa.js"></script>
+</body>
+</html>

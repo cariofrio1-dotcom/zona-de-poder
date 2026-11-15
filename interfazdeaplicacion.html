@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06080d">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/premium.css">
+  <title>Zona de Poder | Entrenamiento</title>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span class="brand-name">ZONA DE PODER<span class="brand-subtitle">Academia de fuerza</span></span>
+      </div>
+      <span class="offline-badge">Listo para tu progreso</span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="main-title" style="grid-template-columns:minmax(0,1.4fr) minmax(220px,.7fr);align-items:center">
+        <div>
+          <p class="eyebrow">Entrena con intención · Progresa a tu ritmo</p>
+          <h1 id="main-title">Tu fuerza. Tu siguiente nivel.</h1>
+          <p class="hero-copy">Elige tu rutina, aprende la técnica y registra tus marcas con una experiencia fluida y enfocada en resultados.</p>
+        </div>
+        <aside class="power-display hero-badge" aria-label="Resumen de tu entrenamiento">
+          <div class="power-label" style="color:var(--muted);font-size:.8rem">Panel de entrenamiento</div>
+          <div class="power-value" id="hero-exercise-count">12 EJ</div>
+          <div class="power-caption" id="hero-level-label">Rutina lista para configurar</div>
+        </aside>
+      </section>
+
+      <section class="panel panel-pad" aria-labelledby="routine-settings-title">
+        <div class="section-head">
+          <div><span class="section-step">01 · Configura tu sesión</span><h2 id="routine-settings-title">Arma tu rutina</h2><p>Elige el día, añade ejercicios y consulta recomendaciones personalizadas por nivel.</p></div>
+        </div>
+        <div class="routine-controls" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+          <div class="control-block card" style="padding:16px">
+            <h3 class="control-title" style="margin:0 0 10px;font-size:.95rem"><span>◆</span> Nivel de experiencia</h3>
+            <div class="choice-row" id="level-options" role="group" aria-label="Nivel de experiencia">
+              <button class="tab active" type="button" data-level="beginner" aria-pressed="true">Principiante · Clase baja</button>
+              <button class="tab" type="button" data-level="intermediate" aria-pressed="false">Intermedio · Clase media</button>
+              <button class="tab" type="button" data-level="advanced" aria-pressed="false">Avanzado · Élite</button>
+            </div>
+          </div>
+          <div class="control-block card" style="padding:16px">
+            <h3 class="control-title" style="margin:0 0 10px;font-size:.95rem"><span>◆</span> Enfoque de entrenamiento</h3>
+            <div class="choice-row" id="focus-options" role="group" aria-label="Enfoque de entrenamiento">
+              <button class="tab active" type="button" data-focus="push" aria-pressed="true">Pecho</button>
+              <button class="tab" type="button" data-focus="pull" aria-pressed="false">Espalda</button>
+              <button class="tab" type="button" data-focus="legs" aria-pressed="false">Piernas</button>
+            </div>
+          </div>
+        </div>
+        <div class="routine-intro">
+          <div><h3 id="routine-title">Día de Pecho</h3><p id="routine-description">Agrega los ejercicios que quieres incluir en este día.</p></div>
+          <span class="experience-tag" id="experience-tag">Principiante · Clase baja</span>
+        </div>
+        <form class="exercise-entry card" id="routine-exercise-form" novalidate style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(140px,.65fr) minmax(0,1.6fr) auto;gap:10px;padding:14px;margin:14px 0">
+          <div class="field">
+            <label for="routine-exercise-name">Nombre del ejercicio</label>
+            <input id="routine-exercise-name" name="name" type="text" list="exercise-suggestions" maxlength="80" placeholder="Ej. Press de banca" autocomplete="off" required>
+            <datalist id="exercise-suggestions"></datalist>
+            <span class="help">Escribe el nombre o elige una sugerencia.</span>
+          </div>
+          <div class="field">
+            <label for="routine-exercise-type">Tipo</label>
+            <select id="routine-exercise-type" name="type"><option value="compound">Compuesto</option><option value="isolation">Aislado</option></select>
+          </div>
+          <div class="field">
+            <label for="routine-exercise-description">Nota técnica (opcional)</label>
+            <input id="routine-exercise-description" name="description" type="text" maxlength="300" placeholder="Tu indicación o variante">
+          </div>
+          <button class="button" type="submit">＋ Agregar</button>
+        </form>
+        <p class="message" id="routine-message" role="alert" aria-live="polite"></p>
+        <div id="exercise-groups" aria-live="polite"></div>
+      </section>
+
+      <section class="stack" aria-label="Seguimiento de fuerza" style="display:grid;gap:18px;margin-top:18px">
+        <div class="lower-grid">
+          <section class="panel panel-pad" aria-labelledby="log-title">
+            <div class="section-head"><div><span class="section-step">02 · Guarda tus marcas</span><h2 id="log-title">Registro de entrenamiento</h2><p>Las marcas se guardan en este navegador.</p></div></div>
+            <form id="record-form" novalidate>
+              <div class="record-form-grid form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+                <div class="field" style="grid-column:1/-1"><label for="record-exercise">Ejercicio</label><select id="record-exercise" name="exercise" required></select></div>
+                <div class="field"><label for="record-weight">Peso levantado (kg)</label><input id="record-weight" name="weight" type="number" min="0.5" max="600" step="0.5" placeholder="Ej. 42.5" required><span class="help">Entre 0,5 y 600 kg</span></div>
+                <div class="field"><label for="record-reps">Repeticiones</label><input id="record-reps" name="reps" type="number" min="1" max="100" step="1" placeholder="Ej. 8" required><span class="help">Entre 1 y 100</span></div>
+                <div class="field" style="grid-column:1/-1"><label for="record-date">Fecha de entrenamiento</label><input id="record-date" name="date" type="date" required><span class="help">No puede ser una fecha futura</span></div>
+              </div>
+              <div class="button-row"><button class="button" type="submit">＋ Guardar marca</button></div>
+              <p class="message" id="record-message" role="alert" aria-live="polite"></p>
+            </form>
+            <div class="history-wrap table-wrap">
+              <table class="history-table"><thead><tr><th>Fecha</th><th>Ejercicio</th><th>Peso</th><th>Reps.</th><th><span class="sr-only">Acción</span></th></tr></thead><tbody id="history-rows"><tr class="table-empty"><td colspan="5">Todavía no hay marcas guardadas.</td></tr></tbody></table>
+            </div>
+            <p class="record-summary" id="record-summary" aria-live="polite">0 marcas registradas.</p>
+          </section>
+
+          <section class="panel panel-pad" aria-labelledby="chart-title">
+            <div class="section-head"><div><span class="section-step">03 · Visualiza tu avance</span><h2 id="chart-title">Progreso anual</h2><p>Tu mejor marca registrada para cada mes.</p></div></div>
+            <div class="chart-controls form-grid" style="grid-template-columns:minmax(0,1fr) 120px">
+              <div class="field"><label for="chart-exercise">Ejercicio</label><select id="chart-exercise"></select></div>
+              <div class="field"><label for="chart-year">Año</label><select id="chart-year"></select></div>
+            </div>
+            <div class="chart-container" id="chart-container"><canvas id="progress-chart" role="img" aria-label="Gráfico anual de progreso de cargas">Gráfico anual de cargas.</canvas><div class="chart-tooltip" id="chart-tooltip" role="status"></div></div>
+            <p class="chart-caption" id="chart-caption">Registra una marca para comenzar a visualizar tu progreso mes a mes.</p>
+          </section>
+        </div>
+        <p class="notice">Las recomendaciones son orientativas y no sustituyen la supervisión de un profesional. Prioriza una técnica segura.</p>
+      </section>
+    </main>
+    <footer class="footer">Zona de Poder · Herramienta educativa de entrenamiento</footer>
+  </div>
+  <script>
+    "use strict";
+
+    /* Catálogo de rutinas con enlaces a movimientos y demostraciones de EresFitness. */
+    const exercises = [
+      { id: "bench-press", name: "Press de banca — Impulso central", focus: "push", type: "compound", muscles: "Pecho · tríceps", sourceUrl: "/ejercicios/press-de-banca-con-barra", sourceName: "Press de banca con barra", description: "Apoya los pies y la espalda en el banco. Baja la barra hacia el pecho con control y empújala sin despegar los hombros." },
+      { id: "incline-press", name: "Press inclinado con mancuernas", focus: "push", type: "compound", muscles: "Pecho superior · hombros", sourceUrl: "/ejercicios/press-de-banca-inclinado-con-mancuernas", sourceName: "Press de banca inclinado con mancuernas", description: "Con el banco inclinado, baja las mancuernas a los lados del pecho y presiónalas arriba, manteniendo las muñecas alineadas." },
+      { id: "shoulder-press", name: "Press de hombros — Elevación del guardián", focus: "push", type: "compound", muscles: "Hombros · tríceps", sourceUrl: "/ejercicios/press-militar-con-mancuernas-de-pie", sourceName: "Press militar con mancuernas de pie", description: "Mantén el abdomen firme y empuja las mancuernas por encima de la cabeza sin arquear la zona lumbar." },
+      { id: "push-up", name: "Flexión de brazos — Plataforma firme", focus: "push", type: "compound", muscles: "Pecho · tríceps", sourceUrl: "/ejercicios/press-de-banca-con-mancuernas", sourceName: "Press de banca con mancuernas · variante de empuje", description: "Forma una línea recta de cabeza a talones. Flexiona los codos para acercar el pecho al suelo y empuja con control." },
+      { id: "lateral-raise", name: "Elevación lateral — Alas de acero", focus: "push", type: "isolation", muscles: "Deltoides laterales", sourceUrl: "/ejercicios/levantamiento-lateral-con-mancuernas", sourceName: "Levantamiento lateral con mancuernas", description: "Eleva las mancuernas hacia los lados hasta la altura de los hombros, con codos suaves y sin balancear el tronco." },
+      { id: "triceps-extension", name: "Extensión de tríceps sobre la cabeza", focus: "push", type: "isolation", muscles: "Tríceps", sourceUrl: "/ejercicios/press-frances-con-mancuernas", sourceName: "Press francés con mancuernas · variante de tríceps", description: "Sujeta una mancuerna con ambas manos. Flexiona los codos detrás de la cabeza y extiéndelos manteniéndolos estables." },
+      { id: "chest-fly", name: "Aperturas con mancuernas — Arco expansivo", focus: "push", type: "isolation", muscles: "Pecho", sourceUrl: "/ejercicios/aperturas-de-pecho-sentado-en-maquina", sourceName: "Aperturas de pecho sentado en máquina", description: "Con una ligera flexión de codos, abre los brazos y vuelve a juntarlos sobre el pecho sin perder el control." },
+      { id: "triceps-pushdown", name: "Extensión de tríceps en polea", focus: "push", type: "isolation", muscles: "Tríceps", sourceUrl: "/ejercicios/extension-de-triceps-en-polea-alta-con-cuerda", sourceName: "Extensión de tríceps en polea alta con cuerda", description: "Mantén los codos junto al cuerpo y extiende los antebrazos hacia abajo; regresa lentamente a la posición inicial." },
+      { id: "pull-up", name: "Dominadas — Ascenso vertical", focus: "pull", type: "compound", muscles: "Espalda · bíceps", sourceUrl: "/ejercicios/jalon-al-pecho-agarre-abierto-prono", sourceName: "Jalón al pecho · variante similar de tracción vertical", description: "Sujeta la barra algo más ancho que los hombros. Activa la espalda, sube el pecho hacia la barra y desciende con control." },
+      { id: "barbell-row", name: "Remo con barra — Tracción potente", focus: "pull", type: "compound", muscles: "Espalda · bíceps", sourceUrl: "/ejercicios/remo-con-mancuernas-de-pie", sourceName: "Remo con mancuernas de pie · variante de remo", description: "Inclina el torso con la espalda neutra y lleva la barra hacia el abdomen; evita impulsarte con la zona lumbar." },
+      { id: "lat-pulldown", name: "Jalón al pecho — Fénix descendente", focus: "pull", type: "compound", muscles: "Dorsales · bíceps", sourceUrl: "/ejercicios/jalon-al-pecho-agarre-abierto-prono", sourceName: "Jalón al pecho con agarre abierto", description: "Con el torso erguido, lleva la barra hacia la parte alta del pecho y dirige los codos hacia abajo." },
+      { id: "dumbbell-row", name: "Remo a una mano con mancuerna", focus: "pull", type: "compound", muscles: "Espalda · bíceps", sourceUrl: "/ejercicios/remo-con-mancuernas-de-pie", sourceName: "Remo con mancuernas de pie · variante de remo", description: "Apoya una mano y una rodilla. Lleva la mancuerna hacia la cadera manteniendo el tronco estable." },
+      { id: "biceps-curl", name: "Curl de bíceps — Concentración máxima", focus: "pull", type: "isolation", muscles: "Bíceps", sourceUrl: "/ejercicios/curl-de-biceps-alternado-con-mancuernas", sourceName: "Curl de bíceps alternado con mancuernas", description: "Con los codos pegados al torso, flexiona los brazos sin balancearte y baja la carga lentamente." },
+      { id: "hammer-curl", name: "Curl martillo — Agarre firme", focus: "pull", type: "isolation", muscles: "Bíceps · antebrazos", sourceUrl: "/ejercicios/curl-martillo-con-mancuernas", sourceName: "Curl martillo con mancuernas", description: "Sujeta las mancuernas con las palmas enfrentadas y flexiona los codos sin mover los hombros." },
+      { id: "face-pull", name: "Tirón a la cara — Escudo posterior", focus: "pull", type: "isolation", muscles: "Deltoides posteriores", sourceUrl: "/ejercicios/remo-con-mancuernas-de-pie", sourceName: "Remo con mancuernas de pie · variante de tracción", description: "Tira de la cuerda hacia la cara separando las manos y junta suavemente los omóplatos." },
+      { id: "reverse-fly", name: "Apertura posterior con mancuernas", focus: "pull", type: "isolation", muscles: "Deltoides posteriores", sourceUrl: "/ejercicios/levantamiento-lateral-con-mancuernas", sourceName: "Levantamiento lateral con mancuernas · variante de hombro", description: "Inclina el torso con la espalda neutra y abre los brazos hacia los lados con un movimiento controlado." },
+      { id: "back-squat", name: "Sentadilla con barra — Base inquebrantable", focus: "legs", type: "compound", muscles: "Cuádriceps · glúteos", sourceUrl: "/ejercicios/sentadillas-con-barra", sourceName: "Sentadillas con barra", description: "Separa los pies al ancho de hombros. Lleva la cadera atrás y abajo, con rodillas siguiendo la línea de los pies." },
+      { id: "romanian-deadlift", name: "Peso muerto rumano — Cadena de acero", focus: "legs", type: "compound", muscles: "Femorales · glúteos", sourceUrl: "/ejercicios/peso-muerto-con-mancuernas-piernas-rigidas", sourceName: "Peso muerto con piernas rígidas · variante de cadena posterior", description: "Con una ligera flexión de rodillas, lleva la cadera atrás y desliza la barra junto a las piernas manteniendo la espalda neutra." },
+      { id: "walking-lunge", name: "Zancada — Avance del guerrero", focus: "legs", type: "compound", muscles: "Cuádriceps · glúteos", sourceUrl: "/ejercicios/estocadas-con-mancuernas", sourceName: "Estocadas con mancuernas", description: "Da un paso amplio y baja la rodilla trasera hacia el suelo. Mantén el torso erguido y empuja con el pie delantero." },
+      { id: "leg-press", name: "Prensa de piernas — Empuje total", focus: "legs", type: "compound", muscles: "Cuádriceps · glúteos", sourceUrl: "/ejercicios/press-de-pierna", sourceName: "Press de pierna", description: "Apoya la espalda en el respaldo y baja la plataforma hasta donde mantengas la pelvis estable; empuja sin bloquear las rodillas." },
+      { id: "leg-extension", name: "Extensión de cuádriceps — Impulso frontal", focus: "legs", type: "isolation", muscles: "Cuádriceps", sourceUrl: "/ejercicios/extensiones-de-pierna-en-maquina", sourceName: "Extensiones de pierna en máquina", description: "Ajusta el eje de la máquina a la rodilla y extiende las piernas de forma suave; desciende sin dejar caer el peso." },
+      { id: "leg-curl", name: "Curl femoral — Control posterior", focus: "legs", type: "isolation", muscles: "Femorales", sourceUrl: "/ejercicios/peso-muerto-con-mancuernas-piernas-rigidas", sourceName: "Peso muerto con piernas rígidas · ejercicio similar de femorales", description: "Mantén la cadera apoyada y flexiona las rodillas llevando los talones hacia los glúteos; regresa lentamente." },
+      { id: "calf-raise", name: "Elevación de talones — Cima de fuerza", focus: "legs", type: "isolation", muscles: "Pantorrillas", sourceUrl: "/ejercicios", sourceName: "Biblioteca oficial · busca elevación de talones", description: "Eleva los talones hasta ponerte de puntillas, pausa brevemente y baja los talones con un estiramiento controlado." },
+      { id: "hip-abduction", name: "Abducción de cadera — Estabilidad lateral", focus: "legs", type: "isolation", muscles: "Glúteo medio", sourceUrl: "/ejercicios/abductores-sentado-en-maquina", sourceName: "Abductores sentado en máquina", description: "Mantén el tronco estable y separa las piernas contra la resistencia; vuelve lentamente sin dejar que la carga te impulse." }
+    ];
+
+    /* Etiquetas y rangos de esfuerzo progresivos, con volumen adecuado a cada nivel. */
+    const focusInfo = {
+      push: { title: "Día de Pecho", description: "Añade tus ejercicios de pecho; también puedes incluir hombros o tríceps." },
+      pull: { title: "Día de Espalda", description: "Añade tus ejercicios de espalda; también puedes incluir bíceps." },
+      legs: { title: "Día de Piernas", description: "Añade tus ejercicios de cuádriceps, femorales o pantorrillas." }
+    };
+    const levelInfo = {
+      beginner: { label: "Principiante · Clase baja", sets: 3, compoundReps: "8–12", isolationReps: "10–15", compoundRest: "120 s", isolationRest: "75 s", between: "2 min" },
+      intermediate: { label: "Intermedio · Clase media", sets: 4, compoundReps: "6–10", isolationReps: "10–15", compoundRest: "150 s", isolationRest: "90 s", between: "2–3 min" },
+      advanced: { label: "Avanzado · Élite", sets: 4, compoundReps: "5–8", isolationReps: "8–12", compoundRest: "180 s", isolationRest: "90 s", between: "3 min" }
+    };
+    const focusNames = { push: "Pecho", pull: "Espalda", legs: "Piernas" };
+    const levelNames = { beginner: "Principiante", intermediate: "Intermedio", advanced: "Avanzado" };
+    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const storageKey = "zona-de-poder-training-records-v1";
+    const routineStorageKey = "zona-de-poder-personal-routines-v1";
+
+    /* Estado de la interfaz y referencias a elementos frecuentes. */
+    const state = {
+      level: "beginner",
+      focus: "push",
+      records: [],
+      chartPoints: [],
+      routines: { push: [], pull: [], legs: [] }
+    };
+    const exerciseGroups = document.querySelector("#exercise-groups");
+    const routineExerciseForm = document.querySelector("#routine-exercise-form");
+    const routineExerciseName = document.querySelector("#routine-exercise-name");
+    const routineMessage = document.querySelector("#routine-message");
+    const exerciseSuggestions = document.querySelector("#exercise-suggestions");
+    const recordExercise = document.querySelector("#record-exercise");
+    const chartExercise = document.querySelector("#chart-exercise");
+    const chartYear = document.querySelector("#chart-year");
+    const recordMessage = document.querySelector("#record-message");
+    const chartCanvas = document.querySelector("#progress-chart");
+    const chartContext = chartCanvas.getContext("2d");
+    const chartTooltip = document.querySelector("#chart-tooltip");
+
+    /* Escapa caracteres especiales al insertar el catálogo controlado en opciones HTML. */
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[character]);
+    }
+
+    /* Enlaza la demostración oficial sin copiar ni volver a alojar su video. */
+    function demoLink(exercise) {
+      const url = exercise.sourceUrl
+        ? `https://eresfitness.com${exercise.sourceUrl}`
+        : `https://eresfitness.com/ejercicios?search=${encodeURIComponent(exercise.sourceName)}`;
+      return `<a class="demo-link" href="${url}" target="_blank" rel="noopener noreferrer"
+        aria-label="Abrir en EresFitness: ${escapeHtml(exercise.sourceName)}">
+        <span class="demo-icon" aria-hidden="true">▶</span>
+        <span class="demo-copy">
+          <strong>Ver demostración oficial</strong>
+          <small>${escapeHtml(exercise.sourceName)}</small>
+        </span>
+        <span class="demo-arrow" aria-hidden="true">ERESFITNESS ↗</span>
+      </a>`;
+    }
+
+    /* Genera la tarjeta y prescripción de cada ejercicio según experiencia y tipo. */
+    function exerciseCard(exercise, prescription) {
+      const isCompound = exercise.type === "compound";
+      const reps = isCompound ? prescription.compoundReps : prescription.isolationReps;
+      const rest = isCompound ? prescription.compoundRest : prescription.isolationRest;
+      const typeLabel = isCompound ? "Compuesto" : "Aislado";
+      const typeClass = isCompound ? "type-compound" : "type-isolation";
+      return `<article class="exercise-card">
+        ${demoLink(exercise)}
+        <div class="exercise-body">
+          <div class="exercise-meta">
+            <span class="type-pill ${typeClass}">${typeLabel}</span>
+            <span class="focus-pill">${escapeHtml(exercise.muscles)}</span>
+          </div>
+          <h4>${escapeHtml(exercise.name)}</h4>
+          <p class="exercise-description">${escapeHtml(exercise.description)}</p>
+          <div class="prescription">
+            <div class="prescription-item"><span class="prescription-label">Series</span><span class="prescription-value">${prescription.sets}</span></div>
+            <div class="prescription-item"><span class="prescription-label">Repeticiones</span><span class="prescription-value">${reps}</span></div>
+            <div class="prescription-item"><span class="prescription-label">Descanso entre series</span><span class="prescription-value">${rest}</span></div>
+            <div class="prescription-item"><span class="prescription-label">Pausa entre ejercicios</span><span class="prescription-value">${prescription.between}</span></div>
+          </div>
+          <p class="animation-note">${exercise.sourceUrl ? "La demostración se abre en la página oficial de EresFitness." : "Abre la búsqueda de este ejercicio en EresFitness para consultar si hay una demostración disponible."}</p>
+        </div>
+        <div class="card-remove"><button class="icon-button" type="button" data-remove-exercise="${escapeHtml(exercise.id)}" aria-label="Quitar ${escapeHtml(exercise.name)} de esta rutina">Quitar de la rutina</button></div>
+      </article>`;
+    }
+
+    /* Actualiza el plan y presenta compuestos y aislados en secciones explícitas. */
+    function renderRoutine() {
+      const info = focusInfo[state.focus];
+      const level = levelInfo[state.level];
+      const current = state.routines[state.focus]
+        .map((id) => exercises.find((exercise) => exercise.id === id))
+        .filter(Boolean);
+      const compounds = current.filter((exercise) => exercise.type === "compound");
+      const isolations = current.filter((exercise) => exercise.type === "isolation");
+      document.querySelector("#routine-title").textContent = info.title;
+      document.querySelector("#routine-description").textContent = info.description;
+      document.querySelector("#experience-tag").textContent = level.label;
+      document.querySelector("#hero-level-label").textContent = `${level.label} · ${info.title}`;
+      document.querySelector("#hero-exercise-count").textContent = `${current.length} EJ`;
+      populateExerciseSuggestions();
+      const emptyMarkup = `<div class="routine-empty"><strong>Aún no agregas ejercicios a este día.</strong>Escribe un nombre arriba y agrégalo. Si eliges una sugerencia, verás sus indicaciones técnicas y recomendaciones; también puedes registrar un ejercicio personalizado.</div>`;
+      exerciseGroups.innerHTML = `${current.length ? "" : emptyMarkup}
+        <section class="exercise-group" aria-labelledby="compounds-heading">
+          <h3 class="group-title" id="compounds-heading">Ejercicios compuestos <span class="group-count">${compounds.length} movimientos</span></h3>
+          ${compounds.length ? `<div class="exercise-grid">${compounds.map((exercise) => exerciseCard(exercise, level)).join("")}</div>` : current.length ? `<div class="empty-state">Todavía no agregas ejercicios compuestos.</div>` : ""}
+        </section>
+        <section class="exercise-group" aria-labelledby="isolations-heading">
+          <h3 class="group-title" id="isolations-heading">Ejercicios aislados <span class="group-count">${isolations.length} movimientos</span></h3>
+          ${isolations.length ? `<div class="exercise-grid">${isolations.map((exercise) => exerciseCard(exercise, level)).join("")}</div>` : current.length ? `<div class="empty-state">Todavía no agregas ejercicios aislados.</div>` : ""}
+        </section>`;
+      document.querySelector("#hero-exercise-count").textContent = `${current.length} EJ`;
+      routineMessage.textContent = "";
+      updateChoiceButtons("#level-options", "level", state.level);
+      updateChoiceButtons("#focus-options", "focus", state.focus);
+    }
+
+    /* Ofrece las opciones del día actual en el autocompletado nativo del navegador. */
+    function populateExerciseSuggestions() {
+      const available = exercises.filter((exercise) => exercise.focus === state.focus);
+      exerciseSuggestions.replaceChildren();
+      available.forEach((exercise) => {
+        const option = document.createElement("option");
+        option.value = exercise.sourceName || exercise.name;
+        exerciseSuggestions.append(option);
+      });
+    }
+
+    /* Guarda las rutinas seleccionadas y los ejercicios personalizados en este navegador. */
+    function persistRoutines() {
+      const customExercises = exercises.filter((exercise) => exercise.custom);
+      const data = { routines: state.routines, customExercises };
+      try {
+        window.localStorage.setItem(routineStorageKey, JSON.stringify(data));
+      } catch (error) {
+        throw new Error(`No se pudo guardar la rutina: ${error.message}`);
+      }
+    }
+
+    /* Restaura rutinas y ejercicios personales antes de cargar el historial de marcas. */
+    function loadRoutines() {
+      try {
+        const stored = window.localStorage.getItem(routineStorageKey);
+        if (stored === null) return;
+        const parsed = JSON.parse(stored);
+        if (!parsed || typeof parsed !== "object" || !parsed.routines || !Array.isArray(parsed.customExercises)) {
+          throw new Error("El formato de la rutina guardada no es válido.");
+        }
+        parsed.customExercises.forEach((exercise) => {
+          if (exercise && typeof exercise.id === "string" && exercise.id.startsWith("custom-") &&
+              typeof exercise.name === "string" && exercise.name.length <= 80 &&
+              ["push", "pull", "legs"].includes(exercise.focus) &&
+              ["compound", "isolation"].includes(exercise.type) &&
+              typeof exercise.description === "string" && typeof exercise.sourceName === "string") {
+            exercises.push({ ...exercise, custom: true });
+          }
+        });
+        ["push", "pull", "legs"].forEach((focus) => {
+          const ids = parsed.routines[focus];
+          if (Array.isArray(ids)) {
+            state.routines[focus] = [...new Set(ids.filter((id) =>
+              typeof id === "string" && exercises.some((exercise) => exercise.id === id && exercise.focus === focus)
+            ))];
+          }
+        });
+      } catch (error) {
+        routineMessage.textContent = `No se pudo leer la rutina guardada: ${error.message}`;
+      }
+    }
+
+    /* Normaliza acentos y puntuación para reconocer nombres sugeridos escritos a mano. */
+    function normalizeExerciseName(value) {
+      return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+    }
+
+    /* Agrega una sugerencia del catálogo o crea un ejercicio personal para el día activo. */
+    routineExerciseForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      routineMessage.textContent = "";
+      const name = routineExerciseName.value.trim();
+      if (name.length < 2 || name.length > 80) {
+        routineMessage.textContent = "Escribe un nombre de ejercicio de entre 2 y 80 caracteres.";
+        return;
+      }
+      const normalizedName = normalizeExerciseName(name);
+      const available = exercises.filter((exercise) => exercise.focus === state.focus);
+      const match = available.find((exercise) =>
+        normalizeExerciseName(exercise.name) === normalizedName ||
+        normalizeExerciseName(exercise.sourceName) === normalizedName
+      );
+      if (match && state.routines[state.focus].includes(match.id)) {
+        routineMessage.textContent = "Ese ejercicio ya está en la rutina de este día.";
+        return;
+      }
+
+      let exercise = match;
+      if (!exercise) {
+        exercise = {
+          id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          name,
+          focus: state.focus,
+          type: routineExerciseForm.elements.type.value,
+          muscles: focusInfo[state.focus].title.replace("Día de ", ""),
+          description: routineExerciseForm.elements.description.value.trim() ||
+            "Ejercicio personalizado. Mantén una postura estable, usa un recorrido cómodo y controla tanto la subida como la bajada.",
+          sourceName: name,
+          custom: true
+        };
+        exercises.push(exercise);
+      }
+      state.routines[state.focus].push(exercise.id);
+      try {
+        persistRoutines();
+      } catch (error) {
+        state.routines[state.focus].pop();
+        if (exercise.custom) exercises.splice(exercises.indexOf(exercise), 1);
+        routineMessage.textContent = error.message;
+        return;
+      }
+      routineExerciseForm.reset();
+      populateExerciseSelects();
+      recordExercise.value = exercise.id;
+      chartExercise.value = exercise.id;
+      renderRoutine();
+      drawChart();
+    });
+
+    /* Quita un ejercicio del día activo sin borrar su historial de progreso. */
+    exerciseGroups.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove-exercise]");
+      if (!button) return;
+      const exerciseId = button.dataset.removeExercise;
+      state.routines[state.focus] = state.routines[state.focus].filter((id) => id !== exerciseId);
+      try {
+        persistRoutines();
+        renderRoutine();
+      } catch (error) {
+        state.routines[state.focus].push(exerciseId);
+        routineMessage.textContent = error.message;
+        renderRoutine();
+        routineMessage.textContent = error.message;
+      }
+    });
+
+    /* Sincroniza estado visual y estado accesible de los controles de selección. */
+    function updateChoiceButtons(containerSelector, dataKey, value) {
+      document.querySelectorAll(`${containerSelector} [data-${dataKey}]`).forEach((button) => {
+        const active = button.dataset[dataKey] === value;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    /* Rellena selectores de ejercicios con categorías útiles para registro y gráfica. */
+    function populateExerciseSelects() {
+      const groups = [
+        { key: "push", label: "Día de Pecho" },
+        { key: "pull", label: "Día de Espalda" },
+        { key: "legs", label: "Día de Piernas" }
+      ];
+      const previousRecord = recordExercise.value;
+      const previousChart = chartExercise.value;
+      [recordExercise, chartExercise].forEach((select) => {
+        select.replaceChildren();
+        groups.forEach((group) => {
+          const optgroup = document.createElement("optgroup");
+          optgroup.label = group.label;
+          exercises.filter((exercise) => exercise.focus === group.key).forEach((exercise) => {
+            const option = document.createElement("option");
+            option.value = exercise.id;
+            option.textContent = exercise.name;
+            optgroup.append(option);
+          });
+          select.append(optgroup);
+        });
+      });
+      recordExercise.value = exercises.some((exercise) => exercise.id === previousRecord)
+        ? previousRecord
+        : exercises.find((exercise) => exercise.focus === state.focus).id;
+      chartExercise.value = exercises.some((exercise) => exercise.id === previousChart)
+        ? previousChart
+        : recordExercise.value;
+    }
+
+    /* Devuelve el nombre seguro de un ejercicio registrado. */
+    function exerciseName(id) {
+      const exercise = exercises.find((item) => item.id === id);
+      return exercise ? exercise.name : "Ejercicio desconocido";
+    }
+
+    /* Lee el historial guardado y muestra explícitamente errores de almacenamiento o datos. */
+    function loadRecords() {
+      try {
+        const stored = window.localStorage.getItem(storageKey);
+        if (stored === null) return;
+        const parsed = JSON.parse(stored);
+        if (!Array.isArray(parsed)) throw new Error("El formato guardado no es una lista.");
+        state.records = parsed.filter((record) =>
+          record && typeof record.id === "string" &&
+          exercises.some((exercise) => exercise.id === record.exerciseId) &&
+          Number.isFinite(record.weight) && record.weight >= 0.5 && record.weight <= 600 &&
+          Number.isInteger(record.reps) && record.reps >= 1 && record.reps <= 100 &&
+          typeof record.date === "string" && isValidDateString(record.date)
+        );
+        renderHistory();
+      } catch (error) {
+        document.querySelector("#record-message").textContent =
+          `No se pudo leer el historial local: ${error.message}. Verifica los permisos de almacenamiento del navegador.`;
+      }
+    }
+
+    /* Persiste el historial y propaga el error para que la interfaz no confirme un guardado falso. */
+    function persistRecords() {
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(state.records));
+      } catch (error) {
+        throw new Error(`No se pudo guardar el historial local: ${error.message}`);
+      }
+    }
+
+    /* Comprueba que una fecha ISO represente una fecha real del calendario. */
+    function isValidDateString(value) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+      const [year, month, day] = value.split("-").map(Number);
+      const date = new Date(Date.UTC(year, month - 1, day));
+      return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+    }
+
+    /* Dibuja las últimas marcas guardadas sin permitir HTML externo en la tabla. */
+    function renderHistory() {
+      const tbody = document.querySelector("#history-rows");
+      tbody.replaceChildren();
+      const sorted = [...state.records].sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+      if (sorted.length === 0) {
+        const row = document.createElement("tr");
+        row.className = "table-empty";
+        const cell = document.createElement("td");
+        cell.colSpan = 5;
+        cell.textContent = "Todavía no hay marcas guardadas.";
+        row.append(cell);
+        tbody.append(row);
+      } else {
+        sorted.slice(0, 12).forEach((record) => {
+          const row = document.createElement("tr");
+          const dateCell = document.createElement("td");
+          dateCell.textContent = new Intl.DateTimeFormat("es", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(`${record.date}T00:00:00Z`));
+          row.append(dateCell);
+          [exerciseName(record.exerciseId), `${formatNumber(record.weight, 1)} kg`, String(record.reps)].forEach((value) => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.append(cell);
+          });
+          const actionCell = document.createElement("td");
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "icon-button";
+          remove.textContent = "Eliminar";
+          remove.setAttribute("aria-label", `Eliminar marca de ${exerciseName(record.exerciseId)}`);
+          remove.addEventListener("click", () => deleteRecord(record.id));
+          actionCell.append(remove);
+          row.append(actionCell);
+          tbody.append(row);
+        });
+      }
+      document.querySelector("#record-summary").innerHTML =
+        `<strong>${formatNumber(state.records.length)}</strong> ${state.records.length === 1 ? "marca registrada" : "marcas registradas"}${state.records.length > 12 ? " · Se muestran las 12 más recientes" : ""}.`;
+      drawChart();
+    }
+
+    /* Elimina una marca y confirma el cambio solo después de guardarlo correctamente. */
+    function deleteRecord(id) {
+      const previous = state.records;
+      state.records = previous.filter((record) => record.id !== id);
+      try {
+        persistRecords();
+        recordMessage.textContent = "";
+        renderHistory();
+      } catch (error) {
+        state.records = previous;
+        recordMessage.textContent = error.message;
+      }
+    }
+
+    /* Formatea las cantidades para el registro y etiquetas del gráfico. */
+    function formatNumber(value, decimals = 0) {
+      return new Intl.NumberFormat("es", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(value);
+    }
+
+    /* Devuelve el año local y los registros aptos para la gráfica mensual. */
+    function chartData() {
+      const exerciseId = chartExercise.value;
+      const year = Number(chartYear.value);
+      const bestByMonth = Array(12).fill(null);
+      state.records.forEach((record) => {
+        if (record.exerciseId !== exerciseId || Number(record.date.slice(0, 4)) !== year) return;
+        const month = Number(record.date.slice(5, 7)) - 1;
+        bestByMonth[month] = bestByMonth[month] === null ? record.weight : Math.max(bestByMonth[month], record.weight);
+      });
+      return bestByMonth;
+    }
+
+    /* Traza con canvas un gráfico adaptable e interactivo de mejores cargas por mes. */
+    function drawChart() {
+      if (!chartContext) return;
+      const rect = chartCanvas.getBoundingClientRect();
+      if (rect.width === 0) return;
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const width = Math.round(rect.width);
+      const height = 270;
+      chartCanvas.width = Math.round(width * dpr);
+      chartCanvas.height = Math.round(height * dpr);
+      chartContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+      chartContext.clearRect(0, 0, width, height);
+
+      const values = chartData();
+      const defined = values.filter((value) => value !== null);
+      const padding = { top: 21, right: 16, bottom: 34, left: 43 };
+      const graphWidth = width - padding.left - padding.right;
+      const graphHeight = height - padding.top - padding.bottom;
+      const xFor = (index) => padding.left + (graphWidth * index) / 11;
+      const maxObserved = defined.length ? Math.max(...defined) : 0;
+      const axisMax = maxObserved === 0 ? 10 : Math.ceil(maxObserved / 10) * 10;
+      const yFor = (value) => padding.top + graphHeight - (value / axisMax) * graphHeight;
+      chartContext.font = "11px system-ui, sans-serif";
+      chartContext.textBaseline = "middle";
+      chartContext.lineWidth = 1;
+
+      for (let tick = 0; tick <= 4; tick += 1) {
+        const value = (axisMax * tick) / 4;
+        const y = yFor(value);
+        chartContext.beginPath();
+        chartContext.strokeStyle = "rgba(163, 175, 196, .13)";
+        chartContext.moveTo(padding.left, y);
+        chartContext.lineTo(width - padding.right, y);
+        chartContext.stroke();
+        chartContext.fillStyle = "#91a0b8";
+        chartContext.textAlign = "right";
+        chartContext.fillText(`${formatNumber(value)} kg`, padding.left - 7, y);
+      }
+
+      monthNames.forEach((month, index) => {
+        chartContext.fillStyle = "#91a0b8";
+        chartContext.textAlign = "center";
+        chartContext.fillText(month, xFor(index), height - 15);
+      });
+
+      state.chartPoints = [];
+      let previous = null;
+      values.forEach((value, index) => {
+        if (value === null) {
+          previous = null;
+          return;
+        }
+        const point = { x: xFor(index), y: yFor(value), value, month: monthNames[index] };
+        if (previous) {
+          chartContext.beginPath();
+          chartContext.moveTo(previous.x, previous.y);
+          chartContext.lineTo(point.x, point.y);
+          chartContext.strokeStyle = "#ff9b46";
+          chartContext.lineWidth = 3;
+          chartContext.lineCap = "round";
+          chartContext.stroke();
+        }
+        chartContext.beginPath();
+        chartContext.arc(point.x, point.y, 5, 0, Math.PI * 2);
+        chartContext.fillStyle = "#ffd45f";
+        chartContext.fill();
+        chartContext.lineWidth = 2;
+        chartContext.strokeStyle = "#121b2d";
+        chartContext.stroke();
+        state.chartPoints.push(point);
+        previous = point;
+      });
+
+      const caption = document.querySelector("#chart-caption");
+      if (defined.length === 0) {
+        caption.textContent = `Sin marcas de ${exerciseName(chartExercise.value)} para ${chartYear.value}. Guarda una marca para iniciar la gráfica.`;
+      } else {
+        caption.textContent = `${defined.length} ${defined.length === 1 ? "mes con registro" : "meses con registros"} · cada punto representa la mejor carga mensual de ${exerciseName(chartExercise.value)} en ${chartYear.value}.`;
+      }
+    }
+
+    /* Convierte coordenadas del puntero en el punto mensual más cercano para mostrar su valor. */
+    function showChartTooltip(event) {
+      if (!state.chartPoints.length) {
+        chartTooltip.style.display = "none";
+        return;
+      }
+      const rect = chartCanvas.getBoundingClientRect();
+      const pointerX = event.clientX - rect.left;
+      const nearest = state.chartPoints.reduce((best, point) =>
+        Math.abs(point.x - pointerX) < Math.abs(best.x - pointerX) ? point : best
+      );
+      if (Math.abs(nearest.x - pointerX) > 28) {
+        chartTooltip.style.display = "none";
+        return;
+      }
+      chartTooltip.textContent = `${nearest.month}: ${formatNumber(nearest.value, 1)} kg`;
+      chartTooltip.style.display = "block";
+      chartTooltip.style.left = `${Math.min(Math.max(nearest.x + 8, 6), rect.width - 125)}px`;
+      chartTooltip.style.top = `${Math.max(nearest.y - 10, 4)}px`;
+    }
+
+    /* Valida fecha, carga y repeticiones antes de añadir la marca al historial anual. */
+    document.querySelector("#record-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      recordMessage.textContent = "";
+      const form = event.currentTarget;
+      const exerciseId = recordExercise.value;
+      const weight = Number(form.elements.weight.value);
+      const reps = Number(form.elements.reps.value);
+      const date = form.elements.date.value;
+      if (!exercises.some((exercise) => exercise.id === exerciseId)) {
+        recordMessage.textContent = "Selecciona un ejercicio válido.";
+        return;
+      }
+      if (!Number.isFinite(weight) || weight < 0.5 || weight > 600) {
+        recordMessage.textContent = "El peso debe estar entre 0,5 y 600 kg.";
+        return;
+      }
+      if (!Number.isInteger(reps) || reps < 1 || reps > 100) {
+        recordMessage.textContent = "Las repeticiones deben ser un número entero entre 1 y 100.";
+        return;
+      }
+      if (!isValidDateString(date)) {
+        recordMessage.textContent = "Selecciona una fecha válida.";
+        return;
+      }
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      const selectedDate = new Date(`${date}T00:00:00`);
+      if (selectedDate > today) {
+        recordMessage.textContent = "La fecha de entrenamiento no puede estar en el futuro.";
+        return;
+      }
+      if (Number(date.slice(0, 4)) < 2000 || Number(date.slice(0, 4)) > 2100) {
+        recordMessage.textContent = "La fecha debe estar entre los años 2000 y 2100.";
+        return;
+      }
+      const record = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        exerciseId,
+        weight,
+        reps,
+        date
+      };
+      state.records.push(record);
+      try {
+        persistRecords();
+      } catch (error) {
+        state.records.pop();
+        recordMessage.textContent = error.message;
+        return;
+      }
+      chartExercise.value = exerciseId;
+      chartYear.value = date.slice(0, 4);
+      form.elements.weight.value = "";
+      form.elements.reps.value = "";
+      renderHistory();
+    });
+
+    /* Permite seleccionar cualquier experiencia y grupo muscular con controles accesibles. */
+    document.querySelector("#level-options").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-level]");
+      if (!button) return;
+      state.level = button.dataset.level;
+      renderRoutine();
+    });
+    document.querySelector("#focus-options").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-focus]");
+      if (!button) return;
+      state.focus = button.dataset.focus;
+      recordExercise.value = exercises.find((exercise) => exercise.focus === state.focus).id;
+      renderRoutine();
+    });
+
+    /* Redibuja la visualización al cambiar ejercicio, año o tamaño de pantalla. */
+    chartExercise.addEventListener("change", drawChart);
+    chartYear.addEventListener("change", drawChart);
+    chartCanvas.addEventListener("mousemove", showChartTooltip);
+    chartCanvas.addEventListener("mouseleave", () => { chartTooltip.style.display = "none"; });
+    window.addEventListener("resize", drawChart);
+
+    /* Inicializa el año, restaura rutinas personales y luego carga sus marcas. */
+    function initialize() {
+      const today = new Date();
+      const year = today.getFullYear();
+      for (let optionYear = year - 5; optionYear <= year + 1; optionYear += 1) {
+        const option = document.createElement("option");
+        option.value = String(optionYear);
+        option.textContent = String(optionYear);
+        chartYear.append(option);
+      }
+      chartYear.value = String(year);
+      document.querySelector("#record-date").value = [
+        year,
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+      ].join("-");
+      loadRoutines();
+      populateExerciseSelects();
+      renderRoutine();
+      loadRecords();
+      renderHistory();
+    }
+
+    initialize();
+  </script>
+  <script src="assets/js/ui.js" defer></script>
+  <script src="pwa.js"></script>
+</body>
+</html>
+
