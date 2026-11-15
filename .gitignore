@@ -1,6 +1,6 @@
-# Vídeos locales: se usan en este equipo pero NO se suben al repositorio.
-assets/videos/
-*.mp4
+# Vídeos originales sin comprimir (~150 MB): se quedan solo en este equipo.
+# Los vídeos optimizados de assets/videos/ sí se versionan.
+assets/videos/fuente/
 
 # Sistema y editores
 Thumbs.db
