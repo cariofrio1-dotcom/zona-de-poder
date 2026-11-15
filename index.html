@@ -5545,30 +5545,12 @@
       }
       try { window.localStorage.setItem(LOCAL_STUDENTS_KEY, JSON.stringify(localStudents)); } catch { /* The in-memory roster remains usable if storage is blocked. */ }
 
-      // Vista previa local: al abrir el archivo en este equipo (file://, localhost
-      // o 127.0.0.1) se muestra el sitio sin pedir cuenta, para poder revisar el
-      // diseño y los vídeos. En un dominio real se mantiene el acceso con cuenta.
-      const localPreview = window.location.protocol === "file:" ||
-        ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
-
       document.body.classList.add("members-enabled");
       setupNote.hidden = true;
-      if (localPreview) {
-        document.body.classList.add("local-coach-mode");
-        document.body.dataset.userRole = "trainer";
-        accessPanel.hidden = true;
-        mainApp.hidden = false;
-        sessionPanel.hidden = false;
-        sessionName.textContent = "Vista local \u00b7 Entrenador";
-        studentDashboard.hidden = true;
-        coachPanel.hidden = false;
-        fillLocalStudentSelect(localStudents[0]?.id || "");
-      } else {
-        accessPanel.hidden = false;
-        mainApp.hidden = false;
-        sessionPanel.hidden = true;
-        coachPanel.hidden = true;
-      }
+      accessPanel.hidden = false;
+      mainApp.hidden = true;
+      sessionPanel.hidden = true;
+      coachPanel.hidden = true;
       let currentUser = null;
       let editingExerciseIndex = null;
       let editingExerciseDay = "";
@@ -6506,9 +6488,8 @@
         studentDashboard.hidden = true;
         coachPanel.hidden = true;
         if (!currentUser) {
-          // El sitio sigue visible sin cuenta; solo se ocultan las areas privadas.
           sessionPanel.hidden = true;
-          mainApp.hidden = false;
+          mainApp.hidden = true;
           accessPanel.hidden = false;
           return;
         }
@@ -6620,7 +6601,7 @@
           document.body.classList.remove("local-coach-mode");
           document.body.removeAttribute("data-user-role");
           sessionPanel.hidden = true;
-          mainApp.hidden = false;
+          mainApp.hidden = true;
           studentDashboard.hidden = true;
           coachPanel.hidden = true;
           accessPanel.hidden = false;
@@ -6787,7 +6768,7 @@
           window.setTimeout(() => {
             setSession(session).catch((error) => {
               sessionPanel.hidden = true;
-              mainApp.hidden = false;
+              mainApp.hidden = true;
               accessPanel.hidden = false;
               setMessage(authMessage, `No se pudo cargar tu cuenta: ${error.message}`, true);
             });
@@ -6803,7 +6784,7 @@
           return setSession(data.session);
         }).catch((error) => {
           sessionPanel.hidden = true;
-          mainApp.hidden = false;
+          mainApp.hidden = true;
           accessPanel.hidden = false;
           setMessage(authMessage, `No se pudo verificar la sesión: ${error.message}`, true);
         });
@@ -6933,31 +6914,6 @@
       });
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) videos.forEach((video) => video.pause());
       syncVideoControl();
-    })();
-  </script>
-  <script>
-    /* Asegura que los vídeos de fondo se reproduzcan en cualquier navegador:
-       algunos bloquean el autoplay hasta la primera interacción. */
-    (() => {
-      const videos = [...document.querySelectorAll("video")];
-      if (!videos.length) return;
-      const playAll = () => {
-        videos.forEach((video) => {
-          video.muted = true;
-          video.playsInline = true;
-          const attempt = video.play();
-          if (attempt && typeof attempt.catch === "function") attempt.catch(() => {});
-        });
-      };
-      playAll();
-      window.addEventListener("load", playAll);
-      window.addEventListener("pageshow", playAll);
-      document.addEventListener("visibilitychange", () => { if (!document.hidden) playAll(); });
-      ["pointerdown", "touchstart", "keydown", "scroll"].forEach((type) =>
-        document.addEventListener(type, playAll, { once: true, passive: true }));
-      videos.forEach((video) => {
-        if (video.readyState < 2) video.addEventListener("canplay", playAll, { once: true });
-      });
     })();
   </script>
   <script src="pwa.js"></script>
