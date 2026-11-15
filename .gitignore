@@ -1,0 +1,13 @@
+# Vídeos locales: se usan en este equipo pero NO se suben al repositorio.
+assets/videos/
+*.mp4
+
+# Sistema y editores
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Entorno y dependencias
+node_modules/
+.env
+.env.local
