@@ -96,8 +96,8 @@
     if (document.querySelector('.mobile-nav')) return;
     const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
     const links = [
-      { href: 'sitioweb.html', icon: '⚡', label: 'Inicio', match: ['sitioweb.html'] },
-      { href: 'index.html', icon: '🥗', label: 'Nutrición', match: ['index.html', 'calculadoradecalorias.html', 'macros.html'] },
+      { href: 'index.html', icon: '⚡', label: 'Inicio', match: ['index.html'] },
+      { href: 'calculadoradecalorias.html', icon: '🥗', label: 'Nutrición', match: ['calculadoradecalorias.html', 'macros.html'] },
       { href: 'interfazdeaplicacion.html', icon: '🏋️', label: 'Rutinas', match: ['interfazdeaplicacion.html'] },
       { href: '#', icon: '↑', label: 'Arriba', top: true }
     ];

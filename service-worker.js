@@ -1,13 +1,12 @@
 "use strict";
 
-const CACHE_NAME = "zona-de-poder-v5";
+const CACHE_NAME = "zona-de-poder-v6";
 const APP_FILES = [
   "./",
   "./index.html",
   "./calculadoradecalorias.html",
   "./MACROS.html",
   "./interfazdeaplicacion.html",
-  "./sitioweb.html",
   "./manifest.webmanifest",
   "./icon.svg",
   "./pwa.js",
