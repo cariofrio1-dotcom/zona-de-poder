@@ -5565,7 +5565,7 @@
         fillLocalStudentSelect(localStudents[0]?.id || "");
       } else {
         accessPanel.hidden = false;
-        mainApp.hidden = true;
+        mainApp.hidden = false;
         sessionPanel.hidden = true;
         coachPanel.hidden = true;
       }
@@ -6506,10 +6506,9 @@
         studentDashboard.hidden = true;
         coachPanel.hidden = true;
         if (!currentUser) {
-          // En vista local (file://, localhost) mantenemos el sitio visible sin cuenta.
-          if (localPreview) return;
+          // El sitio sigue visible sin cuenta; solo se ocultan las areas privadas.
           sessionPanel.hidden = true;
-          mainApp.hidden = true;
+          mainApp.hidden = false;
           accessPanel.hidden = false;
           return;
         }
@@ -6621,7 +6620,7 @@
           document.body.classList.remove("local-coach-mode");
           document.body.removeAttribute("data-user-role");
           sessionPanel.hidden = true;
-          mainApp.hidden = true;
+          mainApp.hidden = false;
           studentDashboard.hidden = true;
           coachPanel.hidden = true;
           accessPanel.hidden = false;
@@ -6788,7 +6787,7 @@
           window.setTimeout(() => {
             setSession(session).catch((error) => {
               sessionPanel.hidden = true;
-              mainApp.hidden = true;
+              mainApp.hidden = false;
               accessPanel.hidden = false;
               setMessage(authMessage, `No se pudo cargar tu cuenta: ${error.message}`, true);
             });
@@ -6804,7 +6803,7 @@
           return setSession(data.session);
         }).catch((error) => {
           sessionPanel.hidden = true;
-          mainApp.hidden = true;
+          mainApp.hidden = false;
           accessPanel.hidden = false;
           setMessage(authMessage, `No se pudo verificar la sesión: ${error.message}`, true);
         });
