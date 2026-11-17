@@ -162,6 +162,9 @@
     .prescription-value { color: var(--text); font-size: .75rem; font-weight: 800; }
     .video-link { display: flex; min-height: 39px; align-items: center; justify-content: center; gap: 7px; margin-top: auto; padding: 9px; border-top: 1px solid var(--line); color: var(--purple-light); background: rgba(168,85,247,.07); font-size: .72rem; font-weight: 750; transition: background .18s; }
     .video-link:hover { background: rgba(168,85,247,.18); }
+    .exercise-demo { position: relative; margin-top: auto; border-top: 1px solid var(--line); background: #05030a; aspect-ratio: 1 / 1; overflow: hidden; }
+    .exercise-demo video { display: block; width: 100%; height: 100%; object-fit: contain; background: #05030a; }
+    .member-exercise .exercise-demo { margin-top: 10px; border: 1px solid rgba(168,85,247,.24); border-radius: 12px; }
     .remove-button { align-self: flex-end; margin: 0 12px 12px; padding: 5px 8px; border: 0; border-radius: 7px; color: var(--muted); background: transparent; font-size: .67rem; }
     .remove-button:hover { color: var(--red); background: rgba(255,140,157,.08); }
     .empty-state { padding: 21px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: .8rem; line-height: 1.5; text-align: center; }
@@ -4493,7 +4496,7 @@
 
     /* Catálogo de ejercicios de ejemplo con videos demostrativos públicos. */
     const exerciseCatalog = [
-      { id: "bench", name: "Press de banca plano", type: "Compuesto", muscle: "Pecho · tríceps", description: "Apoya los pies y mantén los omóplatos estables. Baja la barra hacia el pecho con control y empuja sin rebotar.", videoUrl: "https://eresfitness.com/ejercicios/press-de-banca-con-barra", series: "4 series", reps: "8–10 reps", rest: "90 seg", macro: "3 min" },
+      { id: "bench", name: "Press de banca plano", type: "Compuesto", muscle: "Pecho · tríceps", description: "Apoya los pies y mantén los omóplatos estables. Baja la barra hacia el pecho con control y empuja sin rebotar.", videoUrl: "https://videos.eresfitness.com/videos/02891205-Dumbbell-Bench-Press_Chest-flat_.mp4", series: "4 series", reps: "8–10 reps", rest: "90 seg", macro: "3 min" },
       { id: "incline-bench", name: "Press inclinado con mancuernas", type: "Compuesto", muscle: "Pecho superior", description: "En banco inclinado, baja las mancuernas a los lados del pecho y presiónalas arriba con las muñecas alineadas.", videoUrl: "https://eresfitness.com/ejercicios/press-de-banca-inclinado-con-mancuernas", series: "3 series", reps: "10–12 reps", rest: "75 seg", macro: "2 min" },
       { id: "chest-fly", name: "Aperturas de pecho en máquina", type: "Aislado", muscle: "Pectorales", description: "Mantén una ligera flexión de codos y junta los brazos frente al pecho sin perder el control del recorrido.", videoUrl: "https://eresfitness.com/ejercicios/aperturas-de-pecho-sentado-en-maquina", series: "3 series", reps: "12–15 reps", rest: "60 seg", macro: "2 min" },
       { id: "pushup", name: "Flexiones de brazos", type: "Compuesto", muscle: "Pecho · hombros · tríceps", description: "Forma una línea recta de cabeza a talones. Baja el pecho flexionando los codos y empuja el suelo.", videoUrl: "https://eresfitness.com/ejercicios?search=flexiones", series: "3 series", reps: "8–15 reps", rest: "75 seg", macro: "2 min" },
@@ -4527,6 +4530,61 @@
         return `https://www.youtube.com/results?search_query=${encodeURIComponent(`${exercise.name} ejercicio tecnica correcta`)}`;
       }
     };
+
+    /* Comprueba si el enlace apunta a un archivo de video reproducible en la propia página. */
+    window.isDirectVideoUrl = (url) => {
+      const source = String(url || "").trim();
+      if (!source) return false;
+      try {
+        const parsed = new URL(source, window.location.href);
+        return /\.(mp4|m4v|webm|ogv|ogg|mov)$/i.test(parsed.pathname);
+      } catch {
+        return false;
+      }
+    };
+
+    /* Devuelve el video incrustado cuando el enlace es un archivo y, si no, el enlace externo. */
+    window.exerciseDemoMarkup = (exercise) => {
+      const source = String(exercise?.videoUrl || "").trim();
+      if (!source) return "";
+      if (window.isDirectVideoUrl(source)) {
+        return `<div class="exercise-demo"><video src="${escapeHtml(source)}" autoplay loop muted playsinline preload="metadata" aria-label="Demostración: ${escapeHtml(exercise.name)}"></video></div>`;
+      }
+      return `<a class="video-link" href="${escapeHtml(window.exerciseDemoUrl(exercise))}" target="_blank" rel="noopener noreferrer">▶ Buscar video del ejercicio ↗</a>`;
+    };
+
+    /* Reproduce cada demostración solo mientras está a la vista. */
+    (() => {
+      if (!("MutationObserver" in window)) return;
+      const observer = "IntersectionObserver" in window
+        ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) entry.target.play().catch(() => {});
+              else entry.target.pause();
+            });
+          }, { threshold: 0.3 })
+        : null;
+      const watch = () => {
+        document.querySelectorAll(".exercise-demo video").forEach((video) => {
+          if (video.dataset.demoWatched) return;
+          video.dataset.demoWatched = "1";
+          if (observer) observer.observe(video);
+          else video.play().catch(() => {});
+        });
+      };
+      const start = () => {
+        watch();
+        let scheduled = false;
+        const scheduleWatch = () => {
+          if (scheduled) return;
+          scheduled = true;
+          requestAnimationFrame(() => { scheduled = false; watch(); });
+        };
+        new MutationObserver(scheduleWatch).observe(document.body, { childList: true, subtree: true });
+      };
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+      else start();
+    })();
 
 
     /* Seis rutinas de ejemplo que pueden editarse de forma independiente. */
@@ -4756,11 +4814,9 @@
       if (button) deleteCustomExercise(button.dataset.deleteCustom);
     });
 
-    /* Crea una tarjeta con guía, prescripción y enlace demostrativo externo opcional. */
+    /* Crea una tarjeta con guía, prescripción y demostración incrustada o enlace externo. */
     function exerciseCard(exercise, day, allowRemove = true) {
-      const video = exercise.videoUrl
-        ? `<a class="video-link" href="${escapeHtml(window.exerciseDemoUrl(exercise))}" target="_blank" rel="noopener noreferrer">▶ Buscar video del ejercicio ↗</a>`
-        : "";
+      const video = window.exerciseDemoMarkup(exercise);
       const removeButton = allowRemove
         ? `<button class="remove-button" type="button" data-remove="${escapeHtml(exercise.id)}" data-day="${escapeHtml(day)}">Quitar de este día</button>`
         : "";
@@ -6191,12 +6247,27 @@
           item.append(notes);
         }
         if (exercise.videoUrl) {
-          const link = document.createElement("a");
-          link.href = window.exerciseDemoUrl(exercise);
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = "Buscar video del ejercicio ↗";
-          item.append(link);
+          if (window.isDirectVideoUrl(exercise.videoUrl)) {
+            const demo = document.createElement("div");
+            demo.className = "exercise-demo";
+            const video = document.createElement("video");
+            video.src = exercise.videoUrl;
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = true;
+            video.playsInline = true;
+            video.preload = "metadata";
+            video.setAttribute("aria-label", `Demostración: ${exercise.name}`);
+            demo.append(video);
+            item.append(demo);
+          } else {
+            const link = document.createElement("a");
+            link.href = window.exerciseDemoUrl(exercise);
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.textContent = "Buscar video del ejercicio ↗";
+            item.append(link);
+          }
         }
         if (!onRemove) {
           item.append(createExerciseTimer(exercise));
@@ -6602,7 +6673,7 @@
         form.elements.namedItem("muscle").value = exercise.muscle;
         form.elements.namedItem("notes").value = exercise.notes || "";
         form.elements.namedItem("cooldownSeconds").value = exercise.cooldownSeconds ?? 0;
-        form.elements.namedItem("videoUrl").value = window.exerciseDemoUrl(exercise);
+        form.elements.namedItem("videoUrl").value = exercise.videoUrl || "";
         form.querySelector("button[type=submit]").textContent = "Actualizar ejercicio del dia";
         form.scrollIntoView({ behavior: "smooth", block: "center" });
         form.elements.namedItem("name").focus({ preventScroll: true });
@@ -6674,7 +6745,7 @@
         coachExerciseForm.elements.namedItem("restSeconds").value = Number.parseInt(exercise.rest, 10);
         coachExerciseForm.elements.namedItem("muscle").value = exercise.muscle;
         coachExerciseForm.elements.namedItem("notes").value = exercise.description;
-        coachExerciseForm.elements.namedItem("videoUrl").value = window.exerciseDemoUrl(exercise);
+        coachExerciseForm.elements.namedItem("videoUrl").value = exercise.videoUrl || "";
       });
 
       async function loadCoachRoutine(studentId) {
