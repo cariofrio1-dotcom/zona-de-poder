@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "zona-de-poder-v7";
+const CACHE_NAME = "zona-de-poder-v8";
 const APP_FILES = [
   "./",
   "./index.html",
@@ -11,7 +11,8 @@ const APP_FILES = [
   "./icon.svg",
   "./pwa.js",
   "./assets/css/premium.css",
-  "./assets/js/ui.js"
+  "./assets/js/ui.js",
+  "./assets/data/ejercicios-eresfitness.js"
 ];
 
 self.addEventListener("install", (event) => {

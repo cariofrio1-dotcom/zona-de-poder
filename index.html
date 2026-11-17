@@ -4491,6 +4491,7 @@
     <footer class="footer">Zona de Poder · Entrenamiento con constancia, técnica y propósito.</footer>
   </div>
 
+  <script src="assets/data/ejercicios-eresfitness.js"></script>
   <script>
     "use strict";
 
@@ -4517,6 +4518,27 @@
       { id: "lateral-raise", name: "Elevación lateral", type: "Aislado", muscle: "Deltoides laterales", description: "Eleva las mancuernas a los lados hasta la altura de los hombros, sin balancear el tronco.", videoUrl: "https://videos.eresfitness.com/videos/03341205-Dumbbell-Lateral-Raise_shoulder-flat.mp4", series: "3 series", reps: "12–15 reps", rest: "60 seg", macro: "90 seg" },
       { id: "triceps-extension", name: "Extensión de tríceps en polea", type: "Aislado", muscle: "Tríceps", description: "Mantén los codos junto al cuerpo y extiende los antebrazos; vuelve a la posición inicial lentamente.", videoUrl: "https://videos.eresfitness.com/videos/02001205-Cable-Pushdown-with-rope-attachment_Upper-Arms-flat_GREEN.mp4", series: "3 series", reps: "10–15 reps", rest: "60 seg", macro: "90 seg" }
     ];
+
+    /* Suma el catálogo completo de EresFitness sin repetir los ejercicios ya curados. */
+    if (Array.isArray(window.eresfitnessExercises)) {
+      const normalizeName = (value) => String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+      const knownIds = new Set(exerciseCatalog.map((item) => item.id));
+      const knownNames = new Set(exerciseCatalog.map((item) => normalizeName(item.name)));
+      window.eresfitnessExercises.forEach((item) => {
+        if (!item || !item.id || !item.name || !item.videoUrl) return;
+        const key = normalizeName(item.name);
+        if (knownIds.has(item.id) || knownNames.has(key)) return;
+        knownIds.add(item.id);
+        knownNames.add(key);
+        exerciseCatalog.push(item);
+      });
+    }
+
     window.exerciseDemoUrl = (exercise) => {
       const source = String(exercise?.videoUrl || "").trim();
       if (!source) return "";
@@ -4687,6 +4709,20 @@
       }
     }
 
+    /* Agrupa los ejercicios por músculo principal para que el selector siga siendo manejable. */
+    function muscleGroup(value) {
+      const primary = String(value || "").split(/[,·]/)[0].trim();
+      const aliases = {
+        "Pecho superior": "Pecho",
+        "Pectorales": "Pecho",
+        "Espalda media": "Espalda",
+        "Dorsales": "Espalda",
+        "Femorales": "Isquiotibiales",
+        "Deltoides laterales": "Hombros"
+      };
+      return aliases[primary] || primary || "Otros";
+    }
+
     /* Llena el catálogo y los selectores de ejercicios usados por la rutina y el gráfico. */
     function populateSelects() {
       const catalog = $("#exercise-catalog");
@@ -4697,17 +4733,27 @@
       const previousChart = chartExercise.value;
       [catalog, logExercise, chartExercise].forEach((select) => {
         select.replaceChildren();
-        const standard = document.createElement("optgroup");
-        standard.label = "Ejercicios disponibles";
+        const groups = new Map();
         const personal = document.createElement("optgroup");
         personal.label = "Mis ejercicios";
         allExercises().forEach((exercise) => {
           const option = document.createElement("option");
           option.value = exercise.id;
           option.textContent = exercise.name;
-          (exercise.custom ? personal : standard).append(option);
+          if (exercise.custom) {
+            personal.append(option);
+            return;
+          }
+          const key = muscleGroup(exercise.muscle);
+          let group = groups.get(key);
+          if (!group) {
+            group = document.createElement("optgroup");
+            group.label = key;
+            groups.set(key, group);
+          }
+          group.append(option);
         });
-        select.append(standard);
+        [...groups.keys()].sort((a, b) => a.localeCompare(b, "es")).forEach((key) => select.append(groups.get(key)));
         if (personal.children.length) select.append(personal);
       });
       if (getExercise(previousCatalog)) catalog.value = previousCatalog;
@@ -4734,13 +4780,18 @@
         tab.setAttribute("aria-selected", String(active));
         tab.tabIndex = active ? 0 : -1;
       });
-      const groups = ["Compuesto", "Aislado", "Isométrico"].map((type) => {
+      const baseTypes = ["Compuesto", "Aislado", "Isométrico"];
+      const groups = baseTypes.map((type) => {
         const list = selected.filter((exercise) => exercise.type === type);
         const cards = list.map((exercise) => exerciseCard(exercise, day)).join("");
         const label = type === "Isométrico" ? "Ejercicios isométricos" : `Ejercicios ${type.toLowerCase()}s`;
         return `<section class="exercise-group"><h4>${label} <span style="color:var(--muted);font-size:.68rem;font-weight:500">${list.length}</span></h4>${cards ? `<div class="exercise-grid">${cards}</div>` : `<div class="empty-state">No hay ejercicios ${type.toLowerCase()} en este día.</div>`}</section>`;
-      }).join("");
-      container.innerHTML = groups;
+      });
+      const others = selected.filter((exercise) => !baseTypes.includes(exercise.type));
+      if (others.length) {
+        groups.push(`<section class="exercise-group"><h4>Otros ejercicios <span style="color:var(--muted);font-size:.68rem;font-weight:500">${others.length}</span></h4><div class="exercise-grid">${others.map((exercise) => exerciseCard(exercise, day)).join("")}</div></section>`);
+      }
+      container.innerHTML = groups.join("");
       routineMessage.textContent = "";
       renderCustomLibrary();
     }
@@ -6716,24 +6767,18 @@
 
       const coachExerciseForm = document.querySelector("#coach-exercise-form");
       const coachExerciseCatalog = document.querySelector("#coach-exercise-catalog");
-      const exerciseGroups = {
-        "Pecho": ["bench", "incline-bench", "chest-fly", "pushup"],
-        "Espalda": ["pullup", "lat-pulldown", "barbell-row", "dumbbell-row"],
-        "Hombros": ["shoulder-press", "lateral-raise"],
-        "Bíceps": ["biceps-curl", "hammer-curl"],
-        "Tríceps": ["triceps-extension", "bench", "pushup", "shoulder-press"],
-        "Cuádriceps": ["squat", "leg-press", "lunge", "leg-extension"],
-        "Femorales": ["rdl", "leg-curl"],
-        "Glúteos": ["squat", "leg-press", "rdl", "lunge"],
-        "Pantorrillas": ["calf-raise"]
-      };
-      Object.entries(exerciseGroups).forEach(([group, exerciseIds]) => {
+      const coachGroups = new Map();
+      exerciseCatalog.forEach((exercise) => {
+        const group = muscleGroup(exercise.muscle);
+        if (!coachGroups.has(group)) coachGroups.set(group, []);
+        coachGroups.get(group).push(exercise);
+      });
+      [...coachGroups.keys()].sort((a, b) => a.localeCompare(b, "es")).forEach((group) => {
         const optgroup = document.createElement("optgroup");
         optgroup.label = group;
-        exerciseIds.forEach((id) => {
-          const exercise = exerciseCatalog.find((item) => item.id === id);
-          if (exercise) optgroup.append(new Option(`${exercise.name} · ${exercise.muscle}`, exercise.id));
-        });
+        coachGroups.get(group)
+          .sort((a, b) => a.name.localeCompare(b.name, "es"))
+          .forEach((exercise) => optgroup.append(new Option(exercise.name, exercise.id)));
         coachExerciseCatalog.append(optgroup);
       });
       coachExerciseCatalog.addEventListener("change", () => {
