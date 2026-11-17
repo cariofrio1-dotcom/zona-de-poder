@@ -5446,6 +5446,200 @@
       counters.filter((counter) => counter.dataset.counted !== "true").forEach((counter) => counterObserver.observe(counter));
     })();
   </script>
+  <style>
+    /* Aviso de bienvenida tras crear la cuenta. */
+    #zp-welcome {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: radial-gradient(circle at 50% 32%, rgba(168,85,247,.28), rgba(5,2,10,.88) 60%);
+      -webkit-backdrop-filter: blur(9px);
+      backdrop-filter: blur(9px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .35s ease, visibility 0s linear .35s;
+    }
+    #zp-welcome.is-open {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .35s ease, visibility 0s linear 0s;
+    }
+    body.zp-welcome-open { overflow: hidden; }
+    .zp-welcome-card {
+      position: relative;
+      width: min(430px, 100%);
+      padding: 42px 30px 28px;
+      border-radius: 26px;
+      border: 1px solid rgba(216,180,254,.26);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,42,133,.22), transparent 62%),
+        linear-gradient(168deg, #1d1030 0%, #0d0717 55%, #140b22 100%);
+      box-shadow: 0 40px 90px rgba(0,0,0,.62), 0 0 90px rgba(168,85,247,.2);
+      text-align: center;
+      color: #f6f0ff;
+      opacity: 0;
+      transform: translateY(18px) scale(.95);
+      transition: opacity .4s ease, transform .5s cubic-bezier(.18,.9,.24,1.14);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    #zp-welcome.is-open .zp-welcome-card { opacity: 1; transform: none; }
+    .zp-welcome-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255,42,133,.7), rgba(168,85,247,.12) 42%, rgba(96,165,250,.45));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .zp-welcome-badge {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 74px;
+      height: 74px;
+      margin: -4px auto 20px;
+      border-radius: 50%;
+      background: linear-gradient(150deg, #ff2a85, #a855f7);
+      box-shadow: 0 14px 34px rgba(255,42,133,.35), 0 0 0 8px rgba(168,85,247,.1);
+      animation: zpWelcomePop .6s cubic-bezier(.2,.9,.25,1.3) both .12s;
+    }
+    .zp-welcome-badge svg { width: 34px; height: 34px; fill: #fff; }
+    .zp-welcome-badge::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.35);
+      animation: zpWelcomeRing 2.6s ease-out infinite .6s;
+    }
+    .zp-welcome-kicker {
+      display: block;
+      margin-bottom: 10px;
+      color: #f9a8d4;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .zp-welcome-title {
+      margin: 0 0 10px;
+      font-size: clamp(1.5rem, 5.4vw, 1.9rem);
+      font-weight: 900;
+      line-height: 1.14;
+      background: linear-gradient(100deg, #ffffff 20%, #f9a8d4 62%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .zp-welcome-name {
+      margin: 0 0 12px;
+      color: #e9d5ff;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .zp-welcome-text {
+      margin: 0 auto 24px;
+      max-width: 32ch;
+      color: rgba(226,214,245,.78);
+      font-size: .87rem;
+      line-height: 1.62;
+    }
+    .zp-welcome-cta {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 50px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(120deg, #ff2a85, #a855f7);
+      color: #1b0730;
+      font: inherit;
+      font-size: .9rem;
+      font-weight: 900;
+      letter-spacing: .01em;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: 0 16px 34px rgba(255,42,133,.34);
+      transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+    }
+    .zp-welcome-cta::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%);
+      transform: translateX(-120%);
+      transition: transform .6s ease;
+    }
+    .zp-welcome-cta:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .zp-welcome-cta:hover::before { transform: translateX(120%); }
+    .zp-welcome-cta:active { transform: scale(.98); }
+    .zp-welcome-cta:focus-visible { outline: 2px solid #f9a8d4; outline-offset: 3px; }
+    .zp-welcome-note {
+      margin: 14px 0 0;
+      color: rgba(203,190,225,.62);
+      font-size: .72rem;
+    }
+    .zp-welcome-spark {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f9a8d4;
+      box-shadow: 0 0 12px rgba(249,168,212,.9);
+      opacity: .8;
+      animation: zpWelcomeFloat 5s ease-in-out infinite;
+    }
+    .zp-welcome-spark:nth-of-type(1) { top: 14%; left: 12%; animation-delay: .2s; }
+    .zp-welcome-spark:nth-of-type(2) { top: 26%; right: 10%; width: 4px; height: 4px; animation-delay: 1.1s; background: #c4b5fd; }
+    .zp-welcome-spark:nth-of-type(3) { bottom: 18%; left: 18%; width: 4px; height: 4px; animation-delay: 2s; background: #93c5fd; }
+    @keyframes zpWelcomePop {
+      from { opacity: 0; transform: scale(.6) rotate(-8deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
+    }
+    @keyframes zpWelcomeRing {
+      0% { transform: scale(.9); opacity: .65; }
+      70% { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1.35); opacity: 0; }
+    }
+    @keyframes zpWelcomeFloat {
+      0%, 100% { transform: translateY(0); opacity: .55; }
+      50% { transform: translateY(-12px); opacity: .95; }
+    }
+    @media (max-width: 420px) {
+      .zp-welcome-card { padding: 34px 22px 24px; border-radius: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #zp-welcome, .zp-welcome-card, .zp-welcome-cta, .zp-welcome-cta::before { transition: none; }
+      .zp-welcome-badge, .zp-welcome-badge::after, .zp-welcome-spark { animation: none; }
+    }
+  </style>
+  <div id="zp-welcome" aria-hidden="true">
+    <div class="zp-welcome-card" role="dialog" aria-modal="true" aria-labelledby="zp-welcome-title" aria-describedby="zp-welcome-text">
+      <span class="zp-welcome-spark" aria-hidden="true"></span>
+      <span class="zp-welcome-spark" aria-hidden="true"></span>
+      <span class="zp-welcome-spark" aria-hidden="true"></span>
+      <span class="zp-welcome-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
+      </span>
+      <span class="zp-welcome-kicker">Cuenta creada</span>
+      <h2 class="zp-welcome-title" id="zp-welcome-title">Bienvenido a Zona de Poder</h2>
+      <p class="zp-welcome-name" id="zp-welcome-name"></p>
+      <p class="zp-welcome-text" id="zp-welcome-text">Tu espacio ya está listo: rutinas personalizadas, seguimiento de tu progreso y herramientas de nutrición, todo en un mismo lugar.</p>
+      <button class="zp-welcome-cta" type="button">Empezar a entrenar</button>
+      <p class="zp-welcome-note">Puedes cambiar de rutina cuando quieras desde el menú.</p>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     /* Supabase-backed accounts; student access is also enforced by database RLS. */
@@ -5473,6 +5667,61 @@
       function setMessage(element, message, isError = false) {
         element.textContent = message;
         element.dataset.error = String(isError);
+      }
+
+      /* Aviso de bienvenida: se muestra una sola vez por cuenta. */
+      const welcomeModal = document.querySelector("#zp-welcome");
+      const welcomeName = document.querySelector("#zp-welcome-name");
+      const WELCOME_SEEN_PREFIX = "zp-welcomed-";
+      let welcomeReturnFocus = null;
+
+      function openWelcome(name) {
+        if (!welcomeModal) return;
+        welcomeName.textContent = name ? `Hola, ${name}` : "Tu espacio ya está listo";
+        welcomeReturnFocus = document.activeElement;
+        welcomeModal.setAttribute("aria-hidden", "false");
+        welcomeModal.classList.add("is-open");
+        document.body.classList.add("zp-welcome-open");
+        window.setTimeout(() => {
+          welcomeModal.querySelector(".zp-welcome-cta")?.focus({ preventScroll: true });
+        }, 80);
+      }
+
+      function closeWelcome() {
+        if (!welcomeModal || !welcomeModal.classList.contains("is-open")) return;
+        welcomeModal.classList.remove("is-open");
+        welcomeModal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("zp-welcome-open");
+        if (welcomeReturnFocus && typeof welcomeReturnFocus.focus === "function") {
+          welcomeReturnFocus.focus({ preventScroll: true });
+        }
+        welcomeReturnFocus = null;
+      }
+
+      function maybeShowWelcome(profile) {
+        if (!profile?.id) return;
+        try {
+          if (localStorage.getItem(WELCOME_SEEN_PREFIX + profile.id) === "1") return;
+        } catch { /* Si el almacenamiento está bloqueado, se muestra igualmente. */ }
+        // Solo para cuentas nuevas: evita saludar como "recién creada" a alguien
+        // que ya tenía cuenta y entra desde otro dispositivo.
+        const created = profile.created_at ? Date.parse(profile.created_at) : NaN;
+        if (Number.isFinite(created) && Date.now() - created > 7 * 24 * 60 * 60 * 1000) return;
+        openWelcome(profile.full_name || "");
+        try { localStorage.setItem(WELCOME_SEEN_PREFIX + profile.id, "1"); } catch { /* Silencioso. */ }
+      }
+
+      if (welcomeModal) {
+        welcomeModal.addEventListener("click", (event) => {
+          if (event.target === welcomeModal) closeWelcome();
+        });
+        welcomeModal.querySelector(".zp-welcome-cta")?.addEventListener("click", (event) => {
+          event.preventDefault();
+          closeWelcome();
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && welcomeModal.classList.contains("is-open")) closeWelcome();
+        });
       }
 
       function persistLocalRoster() {
@@ -6495,7 +6744,7 @@
         }
 
         const { data: profile, error } = await client.from("profiles")
-          .select("id, email, full_name, role")
+          .select("id, email, full_name, role, created_at")
           .eq("id", currentUser.id)
           .single();
         if (error) throw error;
@@ -6508,6 +6757,7 @@
         mainApp.hidden = false;
         sessionName.textContent = `${profile.full_name || profile.email} · ${profile.role === "trainer" ? "Entrenador" : "Alumno"}`;
         document.body.dataset.userRole = profile.role;
+        maybeShowWelcome(profile);
         if (profile.role === "student") {
           studentDashboard.hidden = false;
           document.querySelector("#student-greeting-name").textContent = profile.full_name || profile.email || "Alumno";
