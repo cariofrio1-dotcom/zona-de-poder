@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "zona-de-poder-v8";
+const CACHE_NAME = "zona-de-poder-v9";
 const APP_FILES = [
   "./",
   "./index.html",
