@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#06040d">
+  <meta name="description" content="Zona de Poder: plataforma de entrenamiento con rutinas personalizadas, seguimiento de progreso, nutrición y más de 600 ejercicios con video. Entrena con propósito.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Zona de Poder">
+  <meta property="og:title" content="Zona de Poder | Entrenamiento">
+  <meta property="og:description" content="Rutinas personalizadas, seguimiento de progreso, nutrición y más de 600 ejercicios con video. Entrena con propósito.">
+  <meta property="og:url" content="https://zona-de-poder-six.vercel.app/">
+  <meta property="og:image" content="https://zona-de-poder-six.vercel.app/David_laid_desktop.jpg">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Zona de Poder | Entrenamiento">
+  <meta name="twitter:description" content="Rutinas personalizadas, seguimiento de progreso, nutrición y más de 600 ejercicios con video.">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Zona de Poder | Entrenamiento</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3970,7 +3981,7 @@
     <main id="main-app">
       <section class="panel panel-pad" id="student-dashboard" hidden aria-labelledby="student-dashboard-title">
         <div class="student-hub-header">
-          <div class="student-greeting"><span class="student-hub-kicker">TU ESPACIO FITNESS</span><h1>Hola, <span id="student-greeting-name">Alumno</span> <span aria-hidden="true">&#128075;</span></h1><p>&#191;Listo para superar tus objetivos hoy?</p></div>
+          <div class="student-greeting"><span class="student-hub-kicker">TU ESPACIO FITNESS</span><h2>Hola, <span id="student-greeting-name">Alumno</span> <span aria-hidden="true">&#128075;</span></h2><p>&#191;Listo para superar tus objetivos hoy?</p></div>
           <div class="student-summary-grid">
             <article class="student-summary-card"><span class="student-summary-icon" aria-hidden="true">&#127947;</span><div><small>ENTRENAMIENTO</small><strong id="student-training-summary">0 ejercicios</strong><span id="student-training-day">Lunes seleccionado</span></div></article>
             <article class="student-summary-card student-summary-calories"><span class="student-summary-icon" aria-hidden="true">&#128293;</span><div><small>CALOR&#205;AS DE HOY</small><strong><span id="student-calorie-summary">0</span> / <span id="student-calorie-goal-summary">2,200</span> kcal</strong><button class="student-quick-log" type="button" data-open-nutrition>+ Registrar comida</button></div></article>
@@ -4060,7 +4071,7 @@
         </div>
         <div class="hero-visual hero-visual-premium">
           <div class="hero-art" aria-hidden="true">
-            <video id="hero-main-video" class="hero-center-video" autoplay loop muted playsinline preload="metadata" poster="David_laid_desktop.jpg" tabindex="-1">
+            <video id="hero-main-video" class="hero-center-video" autoplay loop muted playsinline preload="metadata" poster="assets/images/hero-poster.webp" tabindex="-1">
               <source src="assets/videos/gym-bg.mp4" type="video/mp4">
             </video>
             <span class="hero-art-grid"></span>
@@ -4144,15 +4155,15 @@
         </div>
         <div class="motivation-grid">
           <figure class="motivation-card">
-            <div class="motivation-media" aria-hidden="true"><video class="motivation-video" autoplay loop muted playsinline preload="metadata" poster="David_laid_desktop.jpg"><source src="assets/videos/video-constancia.mp4" type="video/mp4"></video><span class="motivation-video-shade"></span></div>
+            <div class="motivation-media" aria-hidden="true"><video class="motivation-video" autoplay loop muted playsinline preload="metadata" poster="assets/images/hero-poster.webp"><source src="assets/videos/video-constancia.mp4" type="video/mp4"></video><span class="motivation-video-shade"></span></div>
             <figcaption><span class="motivation-tag">Un día a la vez</span><strong>La fuerza también se construye volviendo.</strong><small>Empieza donde estás. El progreso llega con paciencia.</small></figcaption>
           </figure>
           <figure class="motivation-card">
-            <div class="motivation-media" aria-hidden="true"><video class="motivation-video" autoplay loop muted playsinline preload="metadata" poster="David_laid_desktop.jpg"><source src="assets/videos/video-tecnica.mp4" type="video/mp4"></video><span class="motivation-video-shade"></span></div>
+            <div class="motivation-media" aria-hidden="true"><video class="motivation-video" autoplay loop muted playsinline preload="metadata" poster="assets/images/hero-poster.webp"><source src="assets/videos/video-tecnica.mp4" type="video/mp4"></video><span class="motivation-video-shade"></span></div>
             <figcaption><span class="motivation-tag">Enfoque</span><strong>Una repetición más. Con buena técnica.</strong><small>Tu proceso no necesita comparaciones.</small></figcaption>
           </figure>
           <figure class="motivation-card">
-            <div class="motivation-media" aria-hidden="true"><video class="motivation-video" autoplay loop muted playsinline preload="metadata" poster="David_laid_desktop.jpg"><source src="assets/videos/video-progreso.mp4" type="video/mp4"></video><span class="motivation-video-shade"></span></div>
+            <div class="motivation-media" aria-hidden="true"><video class="motivation-video" autoplay loop muted playsinline preload="metadata" poster="assets/images/hero-poster.webp"><source src="assets/videos/video-progreso.mp4" type="video/mp4"></video><span class="motivation-video-shade"></span></div>
             <figcaption><span class="motivation-tag">Tu progreso</span><strong>Hazlo por la persona en quien te conviertes.</strong><small>Descanso, constancia y movimiento cuentan.</small></figcaption>
           </figure>
         </div>
@@ -4215,7 +4226,7 @@
           <div class="result-placeholder" id="nutrition-placeholder">Completa los campos para ver tu evaluación.</div>
           <div id="nutrition-output" hidden>
             <div class="assessment-top">
-              <div><span class="category-badge" id="nutrition-kicker">Clasificación OMS</span><h3 id="nutrition-category"></h3></div>
+              <div><span class="category-badge" id="nutrition-kicker">Clasificación OMS</span><h3 id="nutrition-category">Tu clasificación aparecerá aquí</h3></div>
               <div class="bmi-score"><span>IMC</span><strong id="nutrition-bmi"></strong><small>kg/m²</small></div>
             </div>
             <p class="assessment-message" id="nutrition-message"></p>
@@ -4387,6 +4398,7 @@
           <div class="section-head"><div><span class="step">Personaliza tu programa</span><h2 id="add-exercise-title">Agregar ejercicio al día</h2><p>Elige un ejercicio disponible y agrégalo a la pestaña seleccionada.</p></div></div>
           <form id="add-existing-form" novalidate>
             <div class="builder">
+              <div class="field"><label for="exercise-search">Buscar ejercicio</label><input id="exercise-search" type="search" placeholder="Ej: sentadilla, bíceps, press..." autocomplete="off"></div>
               <div class="field"><label for="exercise-catalog">Ejercicio</label><select id="exercise-catalog" name="exercise" required></select><span class="help">El grupo muscular se asigna desde la ficha del ejercicio.</span></div>
               <button class="button" type="submit">ï¼‹ Agregar al día</button>
             </div>
@@ -4491,7 +4503,6 @@
     <footer class="footer">Zona de Poder · Entrenamiento con constancia, técnica y propósito.</footer>
   </div>
 
-  <script src="assets/data/ejercicios-eresfitness.js"></script>
   <script>
     "use strict";
 
@@ -4518,26 +4529,6 @@
       { id: "lateral-raise", name: "Elevación lateral", type: "Aislado", muscle: "Deltoides laterales", description: "Eleva las mancuernas a los lados hasta la altura de los hombros, sin balancear el tronco.", videoUrl: "https://videos.eresfitness.com/videos/03341205-Dumbbell-Lateral-Raise_shoulder-flat.mp4", thumb: "https://videos.eresfitness.com/thumbnails/03341205-Dumbbell-Lateral-Raise_shoulder-flat0.webp", series: "3 series", reps: "12–15 reps", rest: "60 seg", macro: "90 seg" },
       { id: "triceps-extension", name: "Extensión de tríceps en polea", type: "Aislado", muscle: "Tríceps", description: "Mantén los codos junto al cuerpo y extiende los antebrazos; vuelve a la posición inicial lentamente.", videoUrl: "https://videos.eresfitness.com/videos/02001205-Cable-Pushdown-with-rope-attachment_Upper-Arms-flat_GREEN.mp4", thumb: "https://videos.eresfitness.com/thumbnails/02001205-Cable-Pushdown-with-rope-attachment_Upper-Arms-flat_GREEN0.webp", series: "3 series", reps: "10–15 reps", rest: "60 seg", macro: "90 seg" }
     ];
-
-    /* Suma el catálogo completo de EresFitness sin repetir los ejercicios ya curados. */
-    if (Array.isArray(window.eresfitnessExercises)) {
-      const normalizeName = (value) => String(value || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-      const knownIds = new Set(exerciseCatalog.map((item) => item.id));
-      const knownNames = new Set(exerciseCatalog.map((item) => normalizeName(item.name)));
-      window.eresfitnessExercises.forEach((item) => {
-        if (!item || !item.id || !item.name || !item.videoUrl) return;
-        const key = normalizeName(item.name);
-        if (knownIds.has(item.id) || knownNames.has(key)) return;
-        knownIds.add(item.id);
-        knownNames.add(key);
-        exerciseCatalog.push(item);
-      });
-    }
 
     window.exerciseDemoUrl = (exercise) => {
       const source = String(exercise?.videoUrl || "").trim();
@@ -4759,6 +4750,32 @@
       return aliases[primary] || primary || "Otros";
     }
 
+    /* Renderiza el selector de ejercicios, opcionalmente filtrado por texto. */
+    function renderExerciseCatalog(filter) {
+      const catalog = $("#exercise-catalog");
+      const previous = catalog.value;
+      const q = String(filter || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      catalog.replaceChildren();
+      const groups = new Map();
+      const personal = document.createElement("optgroup");
+      personal.label = "Mis ejercicios";
+      allExercises().forEach((exercise) => {
+        const haystack = (exercise.name + " " + (exercise.muscle || "") + " " + (exercise.type || "")).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (q && !haystack.includes(q)) return;
+        const option = document.createElement("option");
+        option.value = exercise.id;
+        option.textContent = exercise.name;
+        if (exercise.custom) { personal.append(option); return; }
+        const key = muscleGroup(exercise.muscle);
+        let group = groups.get(key);
+        if (!group) { group = document.createElement("optgroup"); group.label = key; groups.set(key, group); }
+        group.append(option);
+      });
+      [...groups.keys()].sort((a, b) => a.localeCompare(b, "es")).forEach((key) => catalog.append(groups.get(key)));
+      if (personal.children.length) catalog.append(personal);
+      if (getExercise(previous)) catalog.value = previous;
+    }
+
     /* Llena el catálogo y los selectores de ejercicios usados por la rutina y el gráfico. */
     function populateSelects() {
       const catalog = $("#exercise-catalog");
@@ -4767,29 +4784,20 @@
       const previousCatalog = catalog.value;
       const previousLog = logExercise.value;
       const previousChart = chartExercise.value;
-      [catalog, logExercise, chartExercise].forEach((select) => {
+      renderExerciseCatalog($("#exercise-search")?.value || "");
+      [logExercise, chartExercise].forEach((select) => {
         select.replaceChildren();
-        const groups = new Map();
+        const standard = document.createElement("optgroup");
+        standard.label = "Ejercicios disponibles";
         const personal = document.createElement("optgroup");
         personal.label = "Mis ejercicios";
         allExercises().forEach((exercise) => {
           const option = document.createElement("option");
           option.value = exercise.id;
           option.textContent = exercise.name;
-          if (exercise.custom) {
-            personal.append(option);
-            return;
-          }
-          const key = muscleGroup(exercise.muscle);
-          let group = groups.get(key);
-          if (!group) {
-            group = document.createElement("optgroup");
-            group.label = key;
-            groups.set(key, group);
-          }
-          group.append(option);
+          (exercise.custom ? personal : standard).append(option);
         });
-        [...groups.keys()].sort((a, b) => a.localeCompare(b, "es")).forEach((key) => select.append(groups.get(key)));
+        select.append(standard);
         if (personal.children.length) select.append(personal);
       });
       if (getExercise(previousCatalog)) catalog.value = previousCatalog;
@@ -4921,6 +4929,10 @@
     }
 
     /* Añade al día seleccionado un ejercicio ya existente en el catálogo. */
+    $("#exercise-search")?.addEventListener("input", (event) => {
+      renderExerciseCatalog(event.target.value);
+    });
+
     $("#add-existing-form").addEventListener("submit", (event) => {
       event.preventDefault();
       routineMessage.textContent = "";
@@ -5319,13 +5331,49 @@
     chartCanvas.addEventListener("mouseleave",() => { tooltip.style.display = "none"; });
     window.addEventListener("resize",drawChart);
 
+    /* Carga el catálogo completo de EresFitness de forma diferida y lo fusiona. */
+    async function loadExerciseCatalog() {
+      if (Array.isArray(window.eresfitnessExercises)) return;
+      try {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "assets/data/ejercicios-eresfitness.js";
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      } catch (error) {
+        return;
+      }
+      if (!Array.isArray(window.eresfitnessExercises)) return;
+      const normalizeName = (value) => String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+      const knownIds = new Set(exerciseCatalog.map((item) => item.id));
+      const knownNames = new Set(exerciseCatalog.map((item) => normalizeName(item.name)));
+      window.eresfitnessExercises.forEach((item) => {
+        if (!item || !item.id || !item.name || !item.videoUrl) return;
+        const key = normalizeName(item.name);
+        if (knownIds.has(item.id) || knownNames.has(key)) return;
+        knownIds.add(item.id);
+        knownNames.add(key);
+        exerciseCatalog.push(item);
+      });
+    }
+
     /* Inicializa controles, restaura lo guardado y muestra la rutina del lunes. */
-    function initialize() {
+    async function initialize() {
       restoreState();
       populateSelects();
       populateYears();
       renderDay(state.day);
       renderHistory();
+      await loadExerciseCatalog();
+      populateSelects();
+      renderDay(state.day);
     }
     initialize();
   </script>
