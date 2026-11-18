@@ -4579,6 +4579,19 @@
       return `<a class="video-link" href="${escapeHtml(window.exerciseDemoUrl(exercise))}" target="_blank" rel="noopener noreferrer">▶ Buscar video del ejercicio ↗</a>`;
     };
 
+    /* Arranca los videos con autoplay en la primera interacción del usuario (algunos navegadores bloquean el autoplay automático en sitios publicados). */
+    let videosStartedByInteraction = false;
+    function startVideosOnInteraction() {
+      if (videosStartedByInteraction) return;
+      videosStartedByInteraction = true;
+      document.querySelectorAll("video[autoplay]").forEach((video) => {
+        if (video.paused) video.play().catch(() => {});
+      });
+    }
+    ["click", "touchstart", "scroll", "keydown"].forEach((eventName) => {
+      window.addEventListener(eventName, startVideosOnInteraction, { once: true, passive: true });
+    });
+
     /* Reanuda los videos con autoplay cuando la pestaña vuelve a estar visible. */
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) return;
