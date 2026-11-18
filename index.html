@@ -4579,6 +4579,14 @@
       return `<a class="video-link" href="${escapeHtml(window.exerciseDemoUrl(exercise))}" target="_blank" rel="noopener noreferrer">▶ Buscar video del ejercicio ↗</a>`;
     };
 
+    /* Reanuda los videos con autoplay cuando la pestaña vuelve a estar visible. */
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) return;
+      document.querySelectorAll("video[autoplay]").forEach((video) => {
+        if (video.paused) video.play().catch(() => {});
+      });
+    });
+
     /* Reproduce cada demostración solo mientras está a la vista. */
     (() => {
       if (!("MutationObserver" in window)) return;
