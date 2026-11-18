@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "zona-de-poder-v11";
+const CACHE_NAME = "zona-de-poder-v12";
 const APP_FILES = [
   "./",
   "./index.html",
@@ -37,6 +37,11 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const requestUrl = new URL(request.url);
   if (request.method !== "GET" || requestUrl.origin !== self.location.origin) return;
+
+  // No interceptar videos ni peticiones con Range: el service worker rompe
+  // la reproduccion de video (respuestas parciales 206) si los cachea.
+  if (request.headers.has("range")) return;
+  if (/\.(mp4|m4v|webm|ogv|ogg|mov)$/i.test(requestUrl.pathname)) return;
 
   if (request.mode === "navigate") {
     event.respondWith((async () => {
